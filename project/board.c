@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+// THIS IS A BIG TEST
 const char *player_string(enum chess_player player)
 {
     switch (player)
@@ -14,7 +15,7 @@ const char *player_string(enum chess_player player)
         return "black";
     }
 }
-// beans
+
 
 const char *player_string_short(enum chess_player player)
 {
