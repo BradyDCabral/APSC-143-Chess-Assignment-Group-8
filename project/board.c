@@ -14,6 +14,7 @@ const char *player_string(enum chess_player player)
         return "black";
     }
 }
+// beans
 
 const char *player_string_short(enum chess_player player)
 {
