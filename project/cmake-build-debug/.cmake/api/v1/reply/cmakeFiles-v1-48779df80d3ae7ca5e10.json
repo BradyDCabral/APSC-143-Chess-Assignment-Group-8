@@ -21,6 +21,11 @@
 		{
 			"isCMake" : true,
 			"isExternal" : true,
+			"path" : "C:/Program Files/JetBrains/CLion 2025.2.1/bin/cmake/win/x64/share/cmake-4.0/Modules/CMakeMinGWFindMake.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
 			"path" : "C:/Program Files/JetBrains/CLion 2025.2.1/bin/cmake/win/x64/share/cmake-4.0/Modules/CMakeSystemSpecificInitialize.cmake"
 		},
 		{
@@ -499,8 +504,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "C:/Users/touch/OneDrive/Documents/Queens/APSC 143/Project/Project Repo/APSC-143-Chess-Assignment-Group-8/project/cmake-build-debug",
-		"source" : "C:/Users/touch/OneDrive/Documents/Queens/APSC 143/Project/Project Repo/APSC-143-Chess-Assignment-Group-8/project"
+		"build" : "C:/Users/owenc/OneDrive/Documents/GitHub/APSC-143-Chess-Assignment-Group-8/project/cmake-build-debug",
+		"source" : "C:/Users/owenc/OneDrive/Documents/GitHub/APSC-143-Chess-Assignment-Group-8/project"
 	},
 	"version" : 
 	{

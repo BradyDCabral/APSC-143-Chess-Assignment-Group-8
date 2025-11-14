@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 
+// THIS IS A BIG TEST
 const char *player_string(enum chess_player player)
 {
     switch (player)
