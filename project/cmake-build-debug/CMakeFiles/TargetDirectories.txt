@@ -1,0 +1,3 @@
+C:/Users/touch/OneDrive/Documents/Queens/APSC 143/Project/project/cmake-build-debug/CMakeFiles/chess-analysis.dir
+C:/Users/touch/OneDrive/Documents/Queens/APSC 143/Project/project/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/touch/OneDrive/Documents/Queens/APSC 143/Project/project/cmake-build-debug/CMakeFiles/rebuild_cache.dir
