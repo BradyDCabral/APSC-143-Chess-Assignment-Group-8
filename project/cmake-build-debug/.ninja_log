@@ -1,0 +1,6 @@
+# ninja log v6
+8	174	7848571871578833	CMakeFiles/chess-analysis.dir/main.c.obj	397f93c5b1033e4a
+23	207	7848571871726973	CMakeFiles/chess-analysis.dir/board.c.obj	a2507d0a3e1fae6c
+33	223	7848571871828838	CMakeFiles/chess-analysis.dir/parser.c.obj	c08909456a7afb2e
+49	241	7848571871982293	CMakeFiles/chess-analysis.dir/panic.c.obj	b85a8add45ede5c6
+242	451	7848571873921416	chess-analysis.exe	c0b0adb696e9b52d
