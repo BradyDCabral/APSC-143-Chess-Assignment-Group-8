@@ -15,6 +15,7 @@ const char *player_string(enum chess_player player)
     }
 }
 
+// Beans
 const char *player_string_short(enum chess_player player)
 {
     switch (player)
