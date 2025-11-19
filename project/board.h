@@ -102,6 +102,9 @@ struct chess_move
 
 };
 
+// Displays information stored in move stucture
+void Display_Move(struct chess_move *move);
+
 // Initializes the state of the board for a new chess game.
 void board_initialize(struct chess_board *board);
 

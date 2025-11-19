@@ -166,6 +166,15 @@ void board_initialize(struct chess_board *board)
 
 }
 
+void Display_Move(struct chess_move *move) {
+    printf("Current board state\n");
+    printf("Piece Type = %s\n", piece_string(move->piece_type));
+    printf("Origin position is (%d, %d)\n", move->Origin_Rank, move->Origin_File);
+    printf("Target position is (%d, %d)\n", move->Target_Rank, move->Target_File);
+    printf("Capture = %d\n", move->Capture);
+    printf("Castle = %d\n", move->Castle);
+    printf("Promoting Piece = %s\n\n", piece_string(move->Promotion_Piece));
+}
 
 void Move_Initialize(struct chess_move *New_Move) {
     New_Move->Capture = false;
