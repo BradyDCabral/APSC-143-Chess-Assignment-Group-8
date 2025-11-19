@@ -105,6 +105,9 @@ struct chess_move
 // Initializes the state of the board for a new chess game.
 void board_initialize(struct chess_board *board);
 
+// Resets the move struct so that carry over errors don't occur
+void Move_Initialize(struct chess_move *New_Move);
+
 // Determine which piece is moving, and complete the move data accordingly.
 // Panics if there is no piece which can make the specified move, or if there
 // are multiple possible pieces.
