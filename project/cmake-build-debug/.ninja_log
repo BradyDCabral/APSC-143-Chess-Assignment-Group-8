@@ -9,3 +9,7 @@
 43	179	7852901528450847	CMakeFiles/chess-analysis.dir/panic.c.obj	b85a8add45ede5c6
 25	181	7852901528268789	CMakeFiles/chess-analysis.dir/board.c.obj	a2507d0a3e1fae6c
 182	362	7852901529833573	chess-analysis.exe	c0b0adb696e9b52d
+13	171	7852915523013941	CMakeFiles/chess-analysis.dir/main.c.obj	397f93c5b1033e4a
+39	174	7852915523264514	CMakeFiles/chess-analysis.dir/parser.c.obj	c08909456a7afb2e
+29	176	7852915523166751	CMakeFiles/chess-analysis.dir/board.c.obj	a2507d0a3e1fae6c
+176	386	7852915524641481	chess-analysis.exe	c0b0adb696e9b52d

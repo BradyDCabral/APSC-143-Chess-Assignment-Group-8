@@ -27,7 +27,8 @@ enum chess_piece
 };
 
 enum chess_rank {
-    RANK_a =0,
+    RANK_NULL = -1,
+    RANK_a,
     RANK_b,
     RANK_c,
     RANK_d,
@@ -39,7 +40,8 @@ enum chess_rank {
 
 // This one is kind of redundent
 enum chess_file {
-    FILE_1 = 0,
+    FILE_NULL = -1,
+    FILE_1,
     FILE_2,
     FILE_3,
     FILE_4,

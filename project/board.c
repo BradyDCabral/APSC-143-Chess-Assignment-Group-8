@@ -166,6 +166,19 @@ void board_initialize(struct chess_board *board)
 
 }
 
+// Resets the move struct so that carry over errors don't occur
+void Move_Initialize(struct chess_move *New_Move) {
+    New_Move->Capture = false;
+    New_Move->Castle = false;
+    New_Move->Promotion_Piece = PIECE_NULL;
+    New_Move->piece_type = PIECE_NULL;
+    New_Move->Origin_Rank = RANK_NULL;
+    New_Move->Origin_File = FILE_NULL;
+    New_Move->Target_Rank = RANK_NULL;
+    New_Move->Target_File = FILE_NULL;
+
+}
+
 void board_complete_move(const struct chess_board *board, struct chess_move *move)
 {
     // TODO: complete the move.

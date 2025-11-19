@@ -16,6 +16,8 @@ bool parse_move(struct chess_move *move)
     if (c == '\n' || c == '\r')
         return false;
 
+    // before reusing the struct
+
     switch (c)
     {
     // TODO: parse the move, starting from the first character. You are free to
