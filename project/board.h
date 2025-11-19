@@ -82,6 +82,22 @@ struct chess_move
     enum chess_piece piece_type;
 
     // TODO: what other fields are needed?
+
+    // Starting position of piece
+    enum chess_rank Origin_Rank;
+    enum chess_file Origin_File;
+
+    // Target location of piece
+    enum chess_rank Target_Rank;
+    enum chess_file Target_File;
+
+    // All move booleans
+    bool Capture;
+    bool Castle;
+
+    // Used to determine promotion
+    enum chess_piece Promotion_Piece;
+
 };
 
 // Initializes the state of the board for a new chess game.

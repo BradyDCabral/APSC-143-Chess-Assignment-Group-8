@@ -1,4 +1,4 @@
-set(CMAKE_RC_COMPILER "C:/Users/owenc/Downloads/mingw64/mingw64/bin/windres.exe")
+set(CMAKE_RC_COMPILER "C:/Users/touch/Documents/Extension/mingw64/bin/windres.exe")
 set(CMAKE_RC_COMPILER_ARG1 "")
 set(CMAKE_RC_COMPILER_LOADED 1)
 set(CMAKE_RC_SOURCE_FILE_EXTENSIONS rc;RC)
