@@ -26,29 +26,29 @@ enum chess_piece
     PIECE_KING,
 };
 
-enum chess_rank {
-    RANK_NULL = -1,
-    RANK_a,
-    RANK_b,
-    RANK_c,
-    RANK_d,
-    RANK_e,
-    RANK_f,
-    RANK_g,
-    RANK_h,
+enum chess_file {
+    FILE_NULL = -1,
+    FILE_a,
+    FILE_b,
+    FILE_c,
+    FILE_d,
+    FILE_e,
+    FILE_f,
+    FILE_g,
+    FILE_h,
 };
 
 // This one is kind of redundent
-enum chess_file {
-    FILE_NULL = -1,
-    FILE_1,
-    FILE_2,
-    FILE_3,
-    FILE_4,
-    FILE_5,
-    FILE_6,
-    FILE_7,
-    FILE_8,
+enum chess_rank {
+    RANK_NULL = -1,
+    RANK_1,
+    RANK_2,
+    RANK_3,
+    RANK_4,
+    RANK_5,
+    RANK_6,
+    RANK_7,
+    RANK_8,
 };
 
 // Gets a lowercase string denoting the piece type.
@@ -86,12 +86,12 @@ struct chess_move
     // TODO: what other fields are needed?
 
     // Starting position of piece
-    enum chess_rank Origin_Rank;
     enum chess_file Origin_File;
+    enum chess_rank Origin_Rank;
 
     // Target location of piece
-    enum chess_rank Target_Rank;
     enum chess_file Target_File;
+    enum chess_rank Target_Rank;
 
     // All move booleans
     bool Capture;

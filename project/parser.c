@@ -78,7 +78,7 @@ bool parse_move(struct chess_move *move)
                 // blah blah
                 move->piece_type = PIECE_KING;
                 move->Castle = true;
-                move->Origin_Rank = RANK_e;
+                move->Origin_File = FILE_e;
                 break;
 
             // Pawn Case
@@ -128,9 +128,9 @@ bool parse_move(struct chess_move *move)
         }
 
         if (num_of_Os == 1) {
-            move->Target_Rank = RANK_g;
+            move->Target_File = FILE_g;
         } else if (num_of_Os == 2) {
-            move->Target_Rank = RANK_c;
+            move->Target_File = FILE_c;
         }
 
 
@@ -149,16 +149,16 @@ bool parse_move(struct chess_move *move)
 
     printf("damn %c\n", c);
 
-    int Limbo_Rank = RANK_NULL;
     int Limbo_File = FILE_NULL;
+    int Limbo_Rank = RANK_NULL;
 
 
     // Checks if valid input
     if ((c >= 'a' && c <= 'h') || (c >= '1' && c <= '8')) {
         if (c >= '1' && c <= '8') {
-            Limbo_File = c - '1';
+            Limbo_Rank = c - '1';
         } else {
-            Limbo_Rank = c - 'a';
+            Limbo_File = c - 'a';
         }
     } else if (c == 'x') {
         move->Capture = true;
@@ -184,12 +184,12 @@ bool parse_move(struct chess_move *move)
     */
 
     if (c >= '1' && c <= '8') {
-        move->Target_Rank = Limbo_Rank;
-        move->Target_File = c - '1';
+        move->Target_File = Limbo_File;
+        move->Target_Rank = c - '1';
     } else if (c >= 'a' && c <= 'h') {
-        move->Target_Rank = c - 'a';
-        move->Origin_Rank = Limbo_Rank;
+        move->Target_File = c - 'a';
         move->Origin_File = Limbo_File;
+        move->Origin_Rank = Limbo_Rank;
     } else {
         panicf("parse error at character '%c'\n", c);
     }

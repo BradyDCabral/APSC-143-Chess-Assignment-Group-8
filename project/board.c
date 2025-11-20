@@ -80,10 +80,10 @@ void board_initialize(struct chess_board *board)
     // TODO: initialize the board state for a new chess game.
 
     // Setting all values to Null
-    for (int file = 0; file < 8; ++file) {
-        for (int rank = 0; rank < 8; ++rank) {
-            board->Grid[file][rank][0] = PIECE_NULL;
-            board->Grid[file][rank][1] = PLAYER_NULL;
+    for (int rank = 0; rank < 8; ++rank) {
+        for (int file = 0; file < 8; ++file) {
+            board->Grid[rank][file][0] = PIECE_NULL;
+            board->Grid[rank][file][1] = PLAYER_NULL;
         }
     }
 
@@ -102,78 +102,78 @@ void board_initialize(struct chess_board *board)
 
     // Rooks
     // W
-    board->Grid[FILE_1][RANK_a][0] = PIECE_ROOK;
-    board->Grid[FILE_1][RANK_a][1] = PLAYER_WHITE;
+    board->Grid[RANK_1][FILE_a][0] = PIECE_ROOK;
+    board->Grid[RANK_1][FILE_a][1] = PLAYER_WHITE;
 
-    board->Grid[FILE_1][RANK_h][0] = PIECE_ROOK;
-    board->Grid[FILE_1][RANK_h][1] = PLAYER_WHITE;
+    board->Grid[RANK_1][FILE_h][0] = PIECE_ROOK;
+    board->Grid[RANK_1][FILE_h][1] = PLAYER_WHITE;
 
     // B
-    board->Grid[FILE_8][RANK_a][0] = PIECE_ROOK;
-    board->Grid[FILE_8][RANK_a][1] = PLAYER_BLACK;
+    board->Grid[RANK_8][FILE_a][0] = PIECE_ROOK;
+    board->Grid[RANK_8][FILE_a][1] = PLAYER_BLACK;
 
-    board->Grid[FILE_8][RANK_h][0] = PIECE_ROOK;
-    board->Grid[FILE_8][RANK_h][1] = PLAYER_BLACK;
+    board->Grid[RANK_8][FILE_h][0] = PIECE_ROOK;
+    board->Grid[RANK_8][FILE_h][1] = PLAYER_BLACK;
 
     // Knights
     // W
-    board->Grid[FILE_1][RANK_b][0] = PIECE_KNIGHT;
-    board->Grid[FILE_1][RANK_b][1] = PLAYER_WHITE;
+    board->Grid[RANK_1][FILE_b][0] = PIECE_KNIGHT;
+    board->Grid[RANK_1][FILE_b][1] = PLAYER_WHITE;
 
-    board->Grid[FILE_1][RANK_g][0] = PIECE_KNIGHT;
-    board->Grid[FILE_1][RANK_g][1] = PLAYER_WHITE;
+    board->Grid[RANK_1][FILE_g][0] = PIECE_KNIGHT;
+    board->Grid[RANK_1][FILE_g][1] = PLAYER_WHITE;
 
     // B
-    board->Grid[FILE_8][RANK_b][0] = PIECE_KNIGHT;
-    board->Grid[FILE_8][RANK_b][1] = PLAYER_BLACK;
+    board->Grid[RANK_8][FILE_b][0] = PIECE_KNIGHT;
+    board->Grid[RANK_8][FILE_b][1] = PLAYER_BLACK;
 
-    board->Grid[FILE_8][RANK_g][0] = PIECE_KNIGHT;
-    board->Grid[FILE_8][RANK_g][1] = PLAYER_BLACK;
+    board->Grid[RANK_8][FILE_g][0] = PIECE_KNIGHT;
+    board->Grid[RANK_8][FILE_g][1] = PLAYER_BLACK;
 
     // Bishops
     // W
-    board->Grid[FILE_1][RANK_c][0] = PIECE_BISHOP;
-    board->Grid[FILE_1][RANK_c][1] = PLAYER_WHITE;
+    board->Grid[RANK_1][FILE_c][0] = PIECE_BISHOP;
+    board->Grid[RANK_1][FILE_c][1] = PLAYER_WHITE;
 
-    board->Grid[FILE_1][RANK_f][0] = PIECE_BISHOP;
-    board->Grid[FILE_1][RANK_f][1] = PLAYER_WHITE;
+    board->Grid[RANK_1][FILE_f][0] = PIECE_BISHOP;
+    board->Grid[RANK_1][FILE_f][1] = PLAYER_WHITE;
 
     // B
-    board->Grid[FILE_8][RANK_c][0] = PIECE_BISHOP;
-    board->Grid[FILE_8][RANK_c][1] = PLAYER_BLACK;
+    board->Grid[RANK_8][FILE_c][0] = PIECE_BISHOP;
+    board->Grid[RANK_8][FILE_c][1] = PLAYER_BLACK;
 
-    board->Grid[FILE_8][RANK_f][0] = PIECE_BISHOP;
-    board->Grid[FILE_8][RANK_f][1] = PLAYER_BLACK;
+    board->Grid[RANK_8][FILE_f][0] = PIECE_BISHOP;
+    board->Grid[RANK_8][FILE_f][1] = PLAYER_BLACK;
 
     // Queen
     // W
-    board->Grid[FILE_1][RANK_d][0] = PIECE_QUEEN;
-    board->Grid[FILE_1][RANK_d][1] = PLAYER_WHITE;
+    board->Grid[RANK_1][FILE_d][0] = PIECE_QUEEN;
+    board->Grid[RANK_1][FILE_d][1] = PLAYER_WHITE;
 
     // B
-    board->Grid[FILE_8][RANK_d][0] = PIECE_QUEEN;
-    board->Grid[FILE_8][RANK_d][1] = PLAYER_BLACK;
+    board->Grid[RANK_8][FILE_d][0] = PIECE_QUEEN;
+    board->Grid[RANK_8][FILE_d][1] = PLAYER_BLACK;
 
     // King
     // W
-    board->Grid[FILE_1][RANK_e][0] = PIECE_KING;
-    board->Grid[FILE_1][RANK_e][1] = PLAYER_WHITE;
+    board->Grid[RANK_1][FILE_e][0] = PIECE_KING;
+    board->Grid[RANK_1][FILE_e][1] = PLAYER_WHITE;
 
     // B
-    board->Grid[FILE_8][RANK_e][0] = PIECE_KING;
-    board->Grid[FILE_8][RANK_e][1] = PLAYER_BLACK;
+    board->Grid[RANK_8][FILE_e][0] = PIECE_KING;
+    board->Grid[RANK_8][FILE_e][1] = PLAYER_BLACK;
 
     //-----OTHER VARIABLE INITIALISATION-----
 
     // King location's
 
     // W
-    board->WKingPos[0] = FILE_1;
-    board->WKingPos[1] = RANK_e;
+    board->WKingPos[0] = RANK_1;
+    board->WKingPos[1] = FILE_e;
 
     // B
-    board->BKingPos[0] = FILE_8;
-    board->BKingPos[1] = RANK_e;
+    board->BKingPos[0] = RANK_8;
+    board->BKingPos[1] = FILE_e;
 
 
 }
@@ -181,8 +181,8 @@ void board_initialize(struct chess_board *board)
 void Display_Move(struct chess_move *move) {
     printf("Current board state\n");
     printf("Piece Type = %s\n", piece_string(move->piece_type));
-    printf("Origin position is (%d, %d)\n", move->Origin_Rank, move->Origin_File);
-    printf("Target position is (%d, %d)\n", move->Target_Rank, move->Target_File);
+    printf("Origin position is (%d, %d)\n", move->Origin_File, move->Origin_Rank);
+    printf("Target position is (%d, %d)\n", move->Target_File, move->Target_Rank);
     printf("Capture = %d\n", move->Capture);
     printf("Castle = %d\n", move->Castle);
     printf("Promoting Piece = %s\n\n", piece_string(move->Promotion_Piece));
@@ -193,10 +193,10 @@ void Move_Initialize(struct chess_move *New_Move) {
     New_Move->Castle = false;
     New_Move->Promotion_Piece = PIECE_NULL;
     New_Move->piece_type = PIECE_NULL;
-    New_Move->Origin_Rank = RANK_NULL;
     New_Move->Origin_File = FILE_NULL;
-    New_Move->Target_Rank = RANK_NULL;
+    New_Move->Origin_Rank = RANK_NULL;
     New_Move->Target_File = FILE_NULL;
+    New_Move->Target_Rank = RANK_NULL;
 }
 
 void board_complete_move(const struct chess_board *board, struct chess_move *move)
@@ -228,10 +228,10 @@ void board_summarize(const struct chess_board *board)
 }
 
 void board_print(const struct chess_board *board) {
-    for (int file = FILE_8; file >= FILE_1; --file) {
-        for (int rank = RANK_a; rank <= RANK_h; ++rank) {
+    for (int rank = RANK_8; rank >= RANK_1; --rank) {
+        for (int file = FILE_a; file <= FILE_h; ++file) {
 
-            printf("[%s|%s]", piece_string_short(board->Grid[file][rank][0]), player_string_short(board->Grid[file][rank][1]));
+            printf("[%s|%s]", piece_string_short(board->Grid[rank][file][0]), player_string_short(board->Grid[rank][file][1]));
         }
         printf("\n");
     }
