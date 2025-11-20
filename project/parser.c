@@ -10,6 +10,9 @@ bool parse_move(struct chess_move *move)
     // Temp variable
     bool Test = true;
 
+    // VARIABLES FOR CONTEXT
+    bool promotion = false;
+
     // Get the first character of the move, ignoring any initial spaces.
     do
     {
@@ -155,7 +158,7 @@ bool parse_move(struct chess_move *move)
 
     // Checks if valid input
     if ((c >= 'a' && c <= 'h') || (c >= '1' && c <= '8')) {
-        if (c >= '1' && c <= '8') {
+        if (c <= '8') {
             Limbo_Rank = c - '1';
         } else {
             Limbo_File = c - 'a';
@@ -190,6 +193,10 @@ bool parse_move(struct chess_move *move)
         move->Target_File = c - 'a';
         move->Origin_File = Limbo_File;
         move->Origin_Rank = Limbo_Rank;
+    } else if (c == 'x') {
+        move->Origin_File = Limbo_File;
+        move->Origin_Rank = Limbo_Rank;
+        move->Capture = true;
     } else {
         panicf("parse error at character '%c'\n", c);
     }
@@ -198,6 +205,90 @@ bool parse_move(struct chess_move *move)
     printf("---THIRD STAGE---\n");
     Display_Move(move);
 
+
+    // FOURTH STAGE
+    c = getc(stdin);
+
+
+
+    // prevents next commands from being read
+    if (c == '\n' || c == '\r' || c == ' ') {
+        ungetc(c, stdin);
+        return true;
+    }
+
+    if (c >= 'a' && c <= 'h') {
+        move->Target_File = c - 'a';
+    } else if (c >= '1' && c <= '8'  && !move->Capture && move->Target_Rank==RANK_NULL) {
+        move->Target_Rank = c - '1';
+        // might be more here
+    } else if (c == '=') {
+        // the variable change might be redundent
+        /*
+        move->Origin_File = Limbo_File;
+        move->Origin_Rank = Limbo_Rank;
+        */
+        promotion = true;
+    } /*else if (c == 'x') {
+        move->Origin_File = Limbo_File;
+        move->Origin_Rank = Limbo_Rank;
+        move->Capture = true;
+    } */else {
+        panicf("parse error at character '%c'\n", c);
+    }
+
+    printf("---FOURTH STAGE---\n");
+    Display_Move(move);
+
+
+
+
+
+
+    // FIFTH STAGE
+    c = getc(stdin);
+
+
+
+    // prevents next commands from being read
+    if (c == '\n' || c == '\r' || c == ' ') {
+        ungetc(c, stdin);
+        return true;
+    }
+
+    /*if (c >= 'a' && c <= 'h') {
+        move->Target_File = c - 'a';
+    } else */ if (c >= '1' && c <= '8' && move->Target_Rank==RANK_NULL) {
+        move->Target_Rank = c - '1';
+        // might be more here
+    } /* else if (c == '=') {
+        move->Origin_File = Limbo_File;
+        move->Origin_Rank = Limbo_Rank;
+        promotion = true;
+    } */else if (c >= 'A' && c <= 'Z' && promotion) {
+        switch (c) {
+            case 'Q':
+                move->Promotion_Piece = PIECE_QUEEN;
+                break;
+            case 'R':
+                move->Promotion_Piece = PIECE_ROOK;
+                break;
+            case 'B':
+                move->Promotion_Piece = PIECE_BISHOP;
+                break;
+            case 'N':
+                move->Promotion_Piece = PIECE_KNIGHT;
+                break;
+            default:
+                panicf("parse error at character '%c'\n", c);
+
+        }
+    } else {
+        panicf("parse error at character '%c'\n", c);
+    }
+
+    printf("---FIFTH STAGE---\n");
+    Display_Move(move);
 
     printf("--------END OF PARSING--------\n");
     return true;
