@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+#include "panic.h"
+
 // GOOD
 const char *player_string(enum chess_player player)
 {
@@ -161,7 +163,17 @@ void board_initialize(struct chess_board *board)
     board->Grid[FILE_8][RANK_e][0] = PIECE_KING;
     board->Grid[FILE_8][RANK_e][1] = PLAYER_BLACK;
 
+    //-----OTHER VARIABLE INITIALISATION-----
 
+    // King location's
+
+    // W
+    board->WKingPos[0] = FILE_1;
+    board->WKingPos[1] = RANK_e;
+
+    // B
+    board->BKingPos[0] = FILE_8;
+    board->BKingPos[1] = RANK_e;
 
 
 }
@@ -205,6 +217,8 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
     case PLAYER_BLACK:
         board->next_move_player = PLAYER_WHITE;
         break;
+    default:
+        panicf("Error Swapping current Player");
     }
 }
 

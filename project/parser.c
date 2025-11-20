@@ -24,7 +24,6 @@ bool parse_move(struct chess_move *move)
     Move_Initialize(move);
 
     // If error do similar to this output
-//        panicf("parse error at character '%c'\n", c);
 
     // if end of command return true
 
@@ -79,6 +78,7 @@ bool parse_move(struct chess_move *move)
                 // blah blah
                 move->piece_type = PIECE_KING;
                 move->Castle = true;
+                move->Origin_Rank = RANK_e;
                 break;
 
             // Pawn Case
@@ -89,7 +89,7 @@ bool parse_move(struct chess_move *move)
 
         }
         if (Test) {
-            printf("---Piece Determined---");
+            printf("---Piece Determined---\n");
             Display_Move(move);
         }
     }else {
@@ -105,32 +105,100 @@ bool parse_move(struct chess_move *move)
         bool loop_Castle = true;
 
         while (loop_Castle) {
+            num_of_Os++;
             c = getc(stdin);
+
+            if (c == '\n' || c == '\r') {
+                loop_Castle = false;
+                break;
+            }
             if (c != '-') {
                 loop_Castle = false;
             }
+
             c = getc(stdin);
-            if (c != '0') {
+            if (c == '\n' || c == '\r') {
+                loop_Castle = false;
+                break;
+            }
+            if (c != 'O') {
                 loop_Castle = false;
             }
-            num_of_Os++;
+
+        }
+
+        if (num_of_Os == 1) {
+            move->Target_Rank = RANK_g;
+        } else if (num_of_Os == 2) {
+            move->Target_Rank = RANK_c;
         }
 
 
-        // Test case for now just ends the function
-        return false;
+
+        if (Test) {
+            printf("---Castle Target Determined---\n");
+            Display_Move(move);
+        }
+        return true;
     }
 
 
 
-    // Second Character : determines part of starting location
-    c = (char)getc(stdin);
+    // Second Character : determines location (Unclear yet if it is starting or target)
+    c = getc(stdin);
 
-    // at the moment doesn't anticipate for castling
+    printf("damn %c\n", c);
+
+    int Limbo_Rank = RANK_NULL;
+    int Limbo_File = FILE_NULL;
+
+
     // Checks if valid input
     if ((c >= 'a' && c <= 'h') || (c >= '1' && c <= '8')) {
+        if (c >= '1' && c <= '8') {
+            Limbo_File = c - '1';
+        } else {
+            Limbo_Rank = c - 'a';
+        }
+    } else if (c == 'x') {
+        move->Capture = true;
     } else {
         panicf("parse error at character '%c'\n", c);
     }
-    return false;
+
+    printf("---Second Stage---\n");
+    Display_Move(move);
+
+    // After Second stage must check if there is a _ or a \n or \r
+
+
+    // THIRD STAGE
+    c = getc(stdin);
+
+    // makes sure we don't read next turn
+    // MIGHT BE WRONG
+    /*
+    if (c == '\n' || c == '\r' || c == ' ') {
+        return true;
+    }
+    */
+
+    if (c >= '1' && c <= '8') {
+        move->Target_Rank = Limbo_Rank;
+        move->Target_File = c - '1';
+    } else if (c >= 'a' && c <= 'h') {
+        move->Target_Rank = c - 'a';
+        move->Origin_Rank = Limbo_Rank;
+        move->Origin_File = Limbo_File;
+    } else {
+        panicf("parse error at character '%c'\n", c);
+    }
+
+
+    printf("---THIRD STAGE---\n");
+    Display_Move(move);
+
+
+    printf("--------END OF PARSING--------\n");
+    return true;
 }
