@@ -199,16 +199,19 @@ void Move_Initialize(struct chess_move *New_Move) {
     New_Move->Target_Rank = RANK_NULL;
 }
 
+// Emily
 void board_complete_move(const struct chess_board *board, struct chess_move *move)
 {
     // TODO: complete the move.
 }
 
+// Owen
 bool King_in_Check(struct chess_board *board, enum chess_player King_Color) {
 
     return false;
 }
 
+// Brady
 void board_apply_move(struct chess_board *board, const struct chess_move *move)
 {
     // TODO: apply a completed move to the board.
@@ -227,6 +230,7 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
     }
 }
 
+// Emily
 void board_summarize(const struct chess_board *board)
 {
     // TODO: print the state of the game.
