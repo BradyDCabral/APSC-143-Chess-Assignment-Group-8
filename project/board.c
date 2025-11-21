@@ -204,6 +204,11 @@ void board_complete_move(const struct chess_board *board, struct chess_move *mov
     // TODO: complete the move.
 }
 
+bool King_in_Check(struct chess_board *board, enum chess_player King_Color) {
+
+    return false;
+}
+
 void board_apply_move(struct chess_board *board, const struct chess_move *move)
 {
     // TODO: apply a completed move to the board.

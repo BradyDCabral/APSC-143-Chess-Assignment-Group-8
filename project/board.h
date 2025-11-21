@@ -111,6 +111,9 @@ void board_initialize(struct chess_board *board);
 // Resets the move struct so that carry over errors don't occur
 void Move_Initialize(struct chess_move *New_Move);
 
+// Checks if the designated king is in check
+bool King_in_Check(struct chess_board *board, enum chess_player King_Color);
+
 // Determine which piece is moving, and complete the move data accordingly.
 // Panics if there is no piece which can make the specified move, or if there
 // are multiple possible pieces.
