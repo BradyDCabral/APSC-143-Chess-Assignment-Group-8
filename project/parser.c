@@ -169,8 +169,10 @@ bool parse_move(struct chess_move *move)
         panicf("parse error at character '%c'\n", c);
     }
 
-    printf("---Second Stage---\n");
-    Display_Move(move);
+    if (Test) {
+        printf("---Second Stage---\n");
+        Display_Move(move);
+    }
 
     // After Second stage must check if there is a _ or a \n or \r
 
@@ -201,9 +203,10 @@ bool parse_move(struct chess_move *move)
         panicf("parse error at character '%c'\n", c);
     }
 
-
-    printf("---THIRD STAGE---\n");
-    Display_Move(move);
+    if (Test) {
+        printf("---THIRD STAGE---\n");
+        Display_Move(move);
+    }
 
 
     // FOURTH STAGE
@@ -237,9 +240,10 @@ bool parse_move(struct chess_move *move)
         panicf("parse error at character '%c'\n", c);
     }
 
-    printf("---FOURTH STAGE---\n");
-    Display_Move(move);
-
+    if (Test) {
+        printf("---FOURTH STAGE---\n");
+        Display_Move(move);
+    }
 
 
 
@@ -287,9 +291,68 @@ bool parse_move(struct chess_move *move)
         panicf("parse error at character '%c'\n", c);
     }
 
-    printf("---FIFTH STAGE---\n");
-    Display_Move(move);
+    if (Test) {
+        printf("---FIFTH STAGE---\n");
+        Display_Move(move);
+    }
 
-    printf("--------END OF PARSING--------\n");
+    // SIXTH STAGE
+    c = getc(stdin);
+
+    if (c == '\n' || c == '\r' || c == ' ') {
+        ungetc(c, stdin);
+        return true;
+    }
+
+    if (c == '=') {
+        promotion = true;
+    } else {
+        panicf("parse error at character '%c'\n", c);
+    }
+
+    if (Test) {
+        printf("---SIXTH STAGE---\n");
+        Display_Move(move);
+    }
+
+    // SEVENTH STAGE
+    c = getc(stdin);
+
+    if (c == '\n' || c == '\r' || c == ' ') {
+        ungetc(c, stdin);
+        return true;
+    }
+
+    if (c >= 'A' && c <= 'Z' && promotion) {
+        switch (c) {
+            case 'Q':
+                move->Promotion_Piece = PIECE_QUEEN;
+                break;
+            case 'R':
+                move->Promotion_Piece = PIECE_ROOK;
+                break;
+            case 'B':
+                move->Promotion_Piece = PIECE_BISHOP;
+                break;
+            case 'N':
+                move->Promotion_Piece = PIECE_KNIGHT;
+                break;
+            default:
+                panicf("parse error at character '%c'\n", c);
+
+        }
+    } else {
+        panicf("parse error at character '%c'\n", c);
+    }
+
+    if (Test) {
+        printf("---SEVENTH STAGE---\n");
+        Display_Move(move);
+    }
+
+    
+    if (Test) {
+        printf("--------END OF PARSING--------\n");
+    }
     return true;
 }
