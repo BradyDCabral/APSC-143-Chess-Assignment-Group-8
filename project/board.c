@@ -216,6 +216,32 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
 {
     // TODO: apply a completed move to the board.
 
+    bool Legal = true;
+
+    // Check if move is legal
+
+    // Get king location as a pointer
+    int *KingPosPtr = (board->next_move_player == PLAYER_WHITE ? &board->WKingPos[0] : &board->BKingPos[0]);
+
+    // King
+    // Normal King moves
+    if (move->piece_type == PIECE_KING) {
+        if (KingPosPtr[0] - move->Target_Rank > 1 || KingPosPtr[1] - move->Target_File > 1) {
+            Legal = false;
+        }
+
+    }
+
+
+
+
+
+
+
+    if (Legal == false) {
+        panicf("illegal move : %s from ", piece_string(move->piece_type));
+    }
+
     // The final step is to update the turn of players in the board state.
     switch (board->next_move_player)
     {
