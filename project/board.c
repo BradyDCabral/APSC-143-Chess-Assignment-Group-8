@@ -236,6 +236,11 @@ bool King_in_Check(struct chess_board *board, enum chess_player King_Color) {
     return false;
 }
 
+// Might be necessary (Brady)
+bool King_in_Checkmate(struct chess_board *board, enum chess_player King_Color) {
+    return false;
+}
+
 // Brady
 void board_apply_move(struct chess_board *board, const struct chess_move *move)
 {
@@ -244,6 +249,7 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
     bool Legal = true;
 
     // Check if move is legal
+
 
     // Get king location as a pointer
     int *KingPosPtr = (board->next_move_player == PLAYER_WHITE ? &board->WKingPos[0] : &board->BKingPos[0]);
@@ -259,13 +265,28 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
 
 
 
-
-
-
-
     if (Legal == false) {
         panicf("illegal move : %s from %s%d to %s%d", piece_string(move->piece_type), string_file(move->Origin_File),
             move->Origin_Rank + 1, string_file(move->Target_File), move->Target_Rank+1);
+    }
+
+    // Doesn't do the check if it is a castle as that requires a different form of check
+    if (move->Castle == true && Legal == true) {
+        // Puts king in Check
+        // Simulate the move
+
+        enum chess_piece Sim_Elimination = board->Grid[move->Target_Rank][move->Target_File][0];
+        enum chess_player Sim_Elimination_Color = board->Grid[move->Target_Rank][move->Target_File][1];
+
+        // if the king gets put in check then undo that move
+        // Prevent piece from eliminating own piece
+        if (Sim_Elimination_Color == board->next_move_player) {
+            Legal = false;
+        }
+        // Gonnna make the move
+        if (Legal ==  true) {
+
+        }
     }
 
     // The final step is to update the turn of players in the board state.
