@@ -32,6 +32,31 @@ const char *player_string_short(enum chess_player player)
     }
 }
 
+const char *string_file(enum chess_file file) {
+    switch (file) {
+        case FILE_NULL:
+            return "NULL";
+        case FILE_a:
+            return "a";
+        case FILE_b:
+            return "b";
+        case FILE_c:
+            return "c";
+        case FILE_d:
+            return "d";
+        case FILE_e:
+            return "e";
+        case FILE_f:
+            return "f";
+        case FILE_g:
+            return "g";
+        case FILE_h:
+            return "h";
+        default:
+            return "UNKNOWN";
+    }
+}
+
 const char *piece_string(enum chess_piece piece)
 {
     switch (piece)
@@ -239,7 +264,8 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
 
 
     if (Legal == false) {
-        panicf("illegal move : %s from ", piece_string(move->piece_type));
+        panicf("illegal move : %s from %s%d to %s%d", piece_string(move->piece_type), string_file(move->Origin_File),
+            move->Origin_Rank + 1, string_file(move->Target_File), move->Target_Rank+1);
     }
 
     // The final step is to update the turn of players in the board state.

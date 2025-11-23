@@ -38,6 +38,9 @@ enum chess_file {
     FILE_h,
 };
 
+// Displays chess file as a string
+char *file_string(enum chess_file file);
+
 // This one is kind of redundent
 enum chess_rank {
     RANK_NULL = -1,
