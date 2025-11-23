@@ -200,11 +200,86 @@ void Move_Initialize(struct chess_move *New_Move) {
 }
 
 // Emily
+// Determine what piece is moving, complete move accordingly
+// Panic if no piece can complete specified move, or if multiple pieces can do it
+
+//Declare helper function to verify if specific move is allowed for the piece
+static bool piece_can_move(const struct chess_board *board, enum chess_piece pt, int f, int r, int tf, int tr, const struct chess_move *move) {
+  // TODO: implement real conditions later
+ return true;
+}
 void board_complete_move(const struct chess_board *board, struct chess_move *move)
 {
-    // TODO: complete the move.
+//Get playing side
+enum chess_player side = board->next_move_player;
+
+//Step 1 - Handle Castling
+if (move->Castle) {
+//decide rank based on side
+enum chess_rank rank;
+   if (side == PLAYER_WHITE) {
+       rank = RANK_1;
+   } else if (side == PLAYER_BLACK) {
+       rank = RANK_8;
+   } else {
+       panicf("invalid player in board_complete_move\n");
+}
+//Panic if king isn't in place
+   if (board->Grid[rank][FILE_e][0] != PIECE_KING || board->Grid[rank][FILE_e][1] != side) {
+      panicf("no king on starting square for castling\n");
+}
+//Assign rank, which remains the same when castling
+     move->Origin_Rank = rank;
+     move->Target_Rank = rank;
+  return;
 }
 
+//Step 2 - Candidate pieces for normal (non-castling) moves
+
+//Define piece type (pt), target file (tf) and target rank (tr)
+enum chess_piece pt = move->piece_type;
+int tf = move->Target_File;
+int tr = move->Target_Rank;
+
+//Create array to store candidates
+int cand_files[16];
+int cand_ranks[16];
+int cand_count = 0;
+
+//Scan the whole board
+for (int r = 0; r < 8; r++) {
+   for (int f = 0; f <8; f++) {
+       enum chess_piece p_now = board->Grid[r][f][0]; //current piece
+       enum chess_player c_now = board->Grid[r][f][1]; //curent color
+   if (p_now != pt || c_now != side) continue; // if wrong piece or color, skip loop iterarion
+
+   //Skip squares that don't match origin file or origin rank
+   if (move->Origin_File != FILE_NULL && f != move->Origin_File) continue;
+   if (move->Origin_Rank != RANK_NULL && r != move->Origin_Rank) continue;
+
+   //Check move legality for chess piece, otherwise skip loop iteration
+   if (!piece_can_move(board, pt, f, r, tf, tr, move)) continue;
+//where piece_can_move is a helper function that determines whether that
+//piece can move in that certain way (like if a pawn is allowed to move diagonally etc)
+//Do we have something like that?
+
+//at this point, there should be a valid candidate
+      cand_files[cand_count] = f;
+      cand_ranks[cand_count] = r;
+      cand_count++;
+   }
+  }
+
+//Step 3 - Handle Candidate Number
+  if (cand_count == 0) {
+      panicf("no piece can make this move\n");
+   } else if (cand_count > 1) {
+      panicf("multiple pieces can make this move\n");
+  } else {
+     move->Origin_File = cand_files[0];
+     move->Origin_Rank = cand_ranks[0];
+  }
+}
 // Owen
 bool King_in_Check(struct chess_board *board, enum chess_player King_Color) {
 
