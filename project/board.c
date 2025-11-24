@@ -203,7 +203,7 @@ void Move_Initialize(struct chess_move *New_Move) {
 // Determine what piece is moving, complete move accordingly
 // Panic if no piece can complete specified move, or if multiple pieces can do it
 
-//Declare helper function to verify if specific move is allowed for the piece
+//Declare helper function to verify if specific move is allowed for the piece.
 static bool piece_can_move(const struct chess_board *board, enum chess_piece pt, int f, int r, int tf, int tr, const struct chess_move *move) {
   // TODO: implement real conditions later
  return true;
