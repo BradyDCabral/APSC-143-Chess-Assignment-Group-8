@@ -32,6 +32,31 @@ const char *player_string_short(enum chess_player player)
     }
 }
 
+const char *string_file(enum chess_file file) {
+    switch (file) {
+        case FILE_NULL:
+            return "NULL";
+        case FILE_a:
+            return "a";
+        case FILE_b:
+            return "b";
+        case FILE_c:
+            return "c";
+        case FILE_d:
+            return "d";
+        case FILE_e:
+            return "e";
+        case FILE_f:
+            return "f";
+        case FILE_g:
+            return "g";
+        case FILE_h:
+            return "h";
+        default:
+            return "UNKNOWN";
+    }
+}
+
 const char *piece_string(enum chess_piece piece)
 {
     switch (piece)
@@ -286,10 +311,58 @@ bool King_in_Check(struct chess_board *board, enum chess_player King_Color) {
     return false;
 }
 
+// Might be necessary (Brady)
+bool King_in_Checkmate(struct chess_board *board, enum chess_player King_Color) {
+    return false;
+}
+
 // Brady
 void board_apply_move(struct chess_board *board, const struct chess_move *move)
 {
     // TODO: apply a completed move to the board.
+
+    bool Legal = true;
+
+    // Check if move is legal
+
+
+    // Get king location as a pointer
+    int *KingPosPtr = (board->next_move_player == PLAYER_WHITE ? &board->WKingPos[0] : &board->BKingPos[0]);
+
+    // King
+    // Normal King moves
+    if (move->piece_type == PIECE_KING) {
+        if (KingPosPtr[0] - move->Target_Rank > 1 || KingPosPtr[1] - move->Target_File > 1) {
+            Legal = false;
+        }
+
+    }
+
+
+
+    if (Legal == false) {
+        panicf("illegal move : %s from %s%d to %s%d", piece_string(move->piece_type), string_file(move->Origin_File),
+            move->Origin_Rank + 1, string_file(move->Target_File), move->Target_Rank+1);
+    }
+
+    // Doesn't do the check if it is a castle as that requires a different form of check
+    if (move->Castle == true && Legal == true) {
+        // Puts king in Check
+        // Simulate the move
+
+        enum chess_piece Sim_Elimination = board->Grid[move->Target_Rank][move->Target_File][0];
+        enum chess_player Sim_Elimination_Color = board->Grid[move->Target_Rank][move->Target_File][1];
+
+        // if the king gets put in check then undo that move
+        // Prevent piece from eliminating own piece
+        if (Sim_Elimination_Color == board->next_move_player) {
+            Legal = false;
+        }
+        // Gonnna make the move
+        if (Legal ==  true) {
+
+        }
+    }
 
     // The final step is to update the turn of players in the board state.
     switch (board->next_move_player)
