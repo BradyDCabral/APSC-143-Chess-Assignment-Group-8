@@ -237,6 +237,10 @@ void board_complete_move(const struct chess_board *board, struct chess_move *mov
 {
 //Get playing side
 enum chess_player side = board->next_move_player;
+    //Define piece type (pt), target file (tf) and target rank (tr)
+    enum chess_piece pt = move->piece_type;
+    int tf = move->Target_File;
+    int tr = move->Target_Rank;
 
 //Step 1 - Handle Castling
 if (move->Castle) {
@@ -247,11 +251,19 @@ enum chess_rank rank;
    } else if (side == PLAYER_BLACK) {
        rank = RANK_8;
    } else {
-       panicf("invalid player in board_complete_move\n");
+       panicf("move completion error: %s %s to %s%d\n",
+           player_string(side),
+           piece_string(pt),
+           string_file(tf),
+           tf + 1);
 }
 //Panic if king isn't in place
    if (board->Grid[rank][FILE_e][0] != PIECE_KING || board->Grid[rank][FILE_e][1] != side) {
-      panicf("no king on starting square for castling\n");
+       panicf("move completion error: %s %s to %s%d\n",
+            player_string(side),
+            piece_string(pt),
+            string_file(tf),
+            tf + 1);
 }
 //Assign rank, which remains the same when castling
      move->Origin_Rank = rank;
@@ -260,11 +272,6 @@ enum chess_rank rank;
 }
 
 //Step 2 - Candidate pieces for normal (non-castling) moves
-
-//Define piece type (pt), target file (tf) and target rank (tr)
-enum chess_piece pt = move->piece_type;
-int tf = move->Target_File;
-int tr = move->Target_Rank;
 
 //Create array to store candidates
 int cand_files[16];
@@ -297,9 +304,17 @@ for (int r = 0; r < 8; r++) {
 
 //Step 3 - Handle Candidate Number
   if (cand_count == 0) {
-      panicf("no piece can make this move\n");
+      panicf("move completion error: %s %s to %s%d\n",
+           player_string(side),
+           piece_string(pt),
+           string_file(tf),
+           tf + 1);
    } else if (cand_count > 1) {
-      panicf("multiple pieces can make this move\n");
+       panicf("move completion error: %s %s to %s%d\n",
+            player_string(side),
+            piece_string(pt),
+            string_file(tf),
+            tf + 1);
   } else {
      move->Origin_File = cand_files[0];
      move->Origin_Rank = cand_ranks[0];
