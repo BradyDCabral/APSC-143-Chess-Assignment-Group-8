@@ -344,6 +344,7 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
     // Get king location as a pointer
     int *KingPosPtr = (board->next_move_player == PLAYER_WHITE ? &board->WKingPos[0] : &board->BKingPos[0]);
 
+    // Might be redundent
     // King
     // Normal King moves
     if (move->piece_type == PIECE_KING) {
@@ -354,14 +355,8 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
     }
 
 
-
-    if (Legal == false) {
-        panicf("illegal move : %s from %s%d to %s%d", piece_string(move->piece_type), string_file(move->Origin_File),
-            move->Origin_Rank + 1, string_file(move->Target_File), move->Target_Rank+1);
-    }
-
     // Doesn't do the check if it is a castle as that requires a different form of check
-    if (move->Castle == true && Legal == true) {
+    if (move->Castle == false && Legal == true) {
         // Puts king in Check
         // Simulate the move
 
@@ -369,13 +364,137 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
         enum chess_player Sim_Elimination_Color = board->Grid[move->Target_Rank][move->Target_File][1];
 
         // if the king gets put in check then undo that move
-        // Prevent piece from eliminating own piece
-        if (Sim_Elimination_Color == board->next_move_player) {
+        // Prevent piece from eliminating own piece or eliminating when not marked in notation
+        if (Sim_Elimination_Color == board->next_move_player || (Sim_Elimination != PIECE_NULL && move->Capture == false)) {
             Legal = false;
         }
-        // Gonnna make the move
-        if (Legal ==  true) {
 
+        // Gonnna make the move
+        if (Legal == true) {
+            board->Grid[move->Target_Rank][move->Target_File][0] = move->piece_type;
+            board->Grid[move->Target_Rank][move->Target_File][1] = board->next_move_player;
+            board->Grid[move->Origin_Rank][move->Origin_File][0] = PIECE_NULL;
+            board->Grid[move->Origin_Rank][move->Origin_File][1] = PLAYER_NULL;
+
+            if (move->piece_type == PIECE_KING) {
+                if (board->next_move_player == PLAYER_WHITE) {
+                    board->WKingPos[0] = move->Target_Rank;
+                    board->WKingPos[1] = move->Target_File;
+                } else if (board->next_move_player == PLAYER_BLACK) {
+                    board->BKingPos[0] = move->Target_Rank;
+                    board->BKingPos[1] = move->Target_File;
+                }
+            }
+
+            // If move puts king in check then it isn't legal
+            if (King_in_Check(board, board->next_move_player)) {
+                board->Grid[move->Target_Rank][move->Target_File][0] = Sim_Elimination;
+                board->Grid[move->Target_Rank][move->Target_File][1] =Sim_Elimination_Color;
+                board->Grid[move->Origin_Rank][move->Origin_File][0] = move->piece_type;
+                board->Grid[move->Origin_Rank][move->Origin_File][1] = board->next_move_player;
+
+                if (move->piece_type == PIECE_KING) {
+                    if (board->next_move_player == PLAYER_WHITE) {
+                        board->WKingPos[0] = move->Origin_Rank;
+                        board->WKingPos[1] = move->Origin_File;
+                    } else if (board->next_move_player == PLAYER_BLACK) {
+                        board->BKingPos[0] = move->Origin_Rank;
+                        board->BKingPos[1] = move->Origin_File;
+                    }
+                }
+                Legal = false;
+            }
+
+        }
+    } else if (move->Castle == true && Legal == true) {
+        // Determines if it is even legal to start the castling move
+        if (move->Origin_File != FILE_e) {
+            Legal = false;
+        } else {
+            if (board->next_move_player == PLAYER_WHITE) {
+                if (move->Target_File == FILE_g && board->WShort == false) {
+                    Legal = false;
+                } else if (move->Target_File == FILE_c && board->WLong == false) {
+                    Legal = false;
+                }
+            } else if (board->next_move_player == PLAYER_BLACK) {
+                if (move->Target_File == FILE_g && board->BShort == false) {
+                    Legal = false;
+                } else if (move->Target_File == FILE_c && board->BLong == false) {
+                    Legal = false;
+                }
+            }
+        }
+        if (Legal == true) {
+            int move_amount = (move->Target_File - move->Origin_File) /2;
+            for (int i = 0; i < 2; i++) {
+                if (board->Grid[move->Target_Rank][(board->next_move_player== PLAYER_WHITE ? board->WKingPos[1] : board->BKingPos[1]) + move_amount][0] != PIECE_NULL) {
+                    Legal = false;
+                    break;
+                }
+                board->Grid[move->Target_Rank]
+                    [(board->next_move_player== PLAYER_WHITE ? board->WKingPos[1] : board->BKingPos[1]) + move_amount][0] = move->piece_type;
+                board->Grid[move->Target_Rank]
+                    [(board->next_move_player== PLAYER_WHITE ? board->WKingPos[1] : board->BKingPos[1]) + move_amount][1] = board->next_move_player;
+                board->Grid[move->Target_Rank]
+                    [(board->next_move_player== PLAYER_WHITE ? board->WKingPos[1] : board->BKingPos[1])][0] = PIECE_NULL;
+                board->Grid[move->Target_Rank][(board->next_move_player== PLAYER_WHITE ? board->WKingPos[1] : board->BKingPos[1])][1] = PLAYER_NULL;
+
+
+                if (board->next_move_player == PLAYER_WHITE) {
+                    board->WKingPos[1] += move_amount;
+                } else if (board->next_move_player == PLAYER_BLACK) {
+                    board->BKingPos[1] += move_amount;
+                }
+
+                if (King_in_Check(board, board->next_move_player)) {
+                    Legal = false;
+                    break;
+                }
+            }
+
+        }
+        // Swap the rook into place
+        if (Legal == true) {
+
+        }
+    }
+
+    if (Legal == false) {
+        panicf("illegal move : %s from %s%d to %s%d", piece_string(move->piece_type), string_file(move->Origin_File),
+            move->Origin_Rank + 1, string_file(move->Target_File), move->Target_Rank+1);
+    }
+
+
+
+    // Designates if the Castling can be done started
+    if (move->piece_type == PIECE_KING) {
+        if (board->next_move_player == PLAYER_WHITE) {
+            board->WLong = false;
+            board->WShort = false;
+        } else if (board->next_move_player == PLAYER_BLACK) {
+            board->BLong = false;
+            board->BShort = false;
+        }
+    }
+    // Check if errors
+    if (move->piece_type == PIECE_ROOK) {
+        if (move->Origin_File - move->Target_File  != 0) {
+            if (board->next_move_player == PLAYER_WHITE) {
+                if (board->WLong == true && move->Origin_File == FILE_a) {
+                    board->WLong = false;
+                } else if (board->WShort == true && move->Origin_File == FILE_h) {
+                    board->WShort = false;
+                }
+
+            } else if (board->next_move_player == PLAYER_BLACK) {
+                if (board->BLong == true && move->Origin_File == FILE_a) {
+                    board->BLong = false;
+                } else if (board->BShort == true && move->Origin_File == FILE_h) {
+                    board->BShort = false;
+                }
+
+            }
         }
     }
 
