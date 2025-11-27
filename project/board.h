@@ -80,6 +80,7 @@ struct chess_board
 
     // En Passant Variables
     // Confused on this
+    int EnPassant_Coord[2];
 };
 
 struct chess_move
@@ -107,6 +108,9 @@ struct chess_move
 
 // Displays information stored in move stucture
 void Display_Move(struct chess_move *move);
+
+// Get sign of integer
+int sign_int(int input);
 
 // Initializes the state of the board for a new chess game.
 void board_initialize(struct chess_board *board);
