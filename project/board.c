@@ -334,7 +334,7 @@ static bool piece_can_move(const struct chess_board *board,
                         pass = false;
                         break;
                     }
-                } while (temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h
+                } while ((temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h)
                     & !(temp_r == tr + delta_Rank_Sign && temp_f == tf + delta_File_Sign));
 
                 return pass;
@@ -344,12 +344,13 @@ static bool piece_can_move(const struct chess_board *board,
             return false;
             break;
         case PIECE_BISHOP:
-            // Brady
+
             // Check if it is moving diagonally
             if (delta_File * delta_Rank_Sign == delta_Rank_Sign * delta_Rank_Sign && delta_Rank_Sign != 0 && delta_File_Sign != 0) {
                 int temp_r = r;
                 int temp_f = f;
                 bool pass = true;
+                // check if it is lands on piece when moving
                 do {
                     temp_r += delta_Rank_Sign;
                     temp_f += delta_File_Sign;
@@ -357,16 +358,40 @@ static bool piece_can_move(const struct chess_board *board,
                         pass = false;
                         break;
                     }
-                } while (temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h
+                } while ((temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h)
                     & !(temp_r == tr + delta_Rank_Sign && temp_f == tf + delta_File_Sign));
 
                 return pass;
             }
 
             return false;
+        case PIECE_QUEEN:
 
-      // TODO: complete movement logic for remaining piece (queen).
+            // check if diagonal movement or horizontal or vertical movement
+            if ((delta_File * delta_Rank_Sign == delta_Rank_Sign * delta_Rank_Sign && delta_Rank_Sign != 0 && delta_File_Sign != 0)
+                || (delta_File_Sign * delta_Rank_Sign + delta_Rank_Sign * delta_Rank_Sign == 1)) {
+                int temp_r = r;
+                int temp_f = f;
+                bool pass = true;
+                // check if it is lands on piece when moving
+                do {
+                    temp_r += delta_Rank_Sign;
+                    temp_f += delta_File_Sign;
+                    if (board->Grid[temp_r][temp_f][0] != PIECE_NULL) {
+                        pass = false;
+                        break;
+                    }
+                } while ((temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h)
+                    & !(temp_r == tr + delta_Rank_Sign && temp_f == tf + delta_File_Sign));
+
+                return pass;
+            }
+            return false;
+        default:
+            return false;
+
      }
+
 }
 
 void board_complete_move(const struct chess_board *board, struct chess_move *move)
