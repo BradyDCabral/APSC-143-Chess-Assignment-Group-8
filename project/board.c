@@ -256,6 +256,12 @@ static bool piece_can_move(const struct chess_board *board,
 //Forbid removing one's piece
     if (side == target_player && target_player != PLAYER_NULL) { return false; }
 
+    // CHANGE OF POSITION AND SIGN OF CHANGE OF POSITION
+    int delta_Rank = tr - r;
+    int delta_Rank_Sign = sign_int(delta_Rank);
+    int delta_File = tf - f;
+    int delta_File_Sign = sign_int(delta_File);
+
  // Switch statement for each piece
     switch (pt) {
       case PIECE_PAWN:
@@ -317,13 +323,30 @@ static bool piece_can_move(const struct chess_board *board,
             // Castling is handled in board_complete_move
             return false; //default to false, every other case is illegal for a king
         case PIECE_ROOK:
-
-            int delta_Rank = tr - r;
-            int delta_Rank_Sign = sign_int(delta_Rank);
-            int delta_File = tf - f;
-            int delta_File_Sign = sign_int(delta_File);
-
             if (delta_File_Sign * delta_Rank_Sign + delta_Rank_Sign * delta_Rank_Sign == 1) {
+                int temp_r = r;
+                int temp_f = f;
+                bool pass = true;
+                do {
+                    temp_r += delta_Rank_Sign;
+                    temp_f += delta_File_Sign;
+                    if (board->Grid[temp_r][temp_f][0] != PIECE_NULL) {
+                        pass = false;
+                        break;
+                    }
+                } while (temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h
+                    & !(temp_r == tr + delta_Rank_Sign && temp_f == tf + delta_File_Sign));
+
+                return pass;
+            }
+
+
+            return false;
+            break;
+        case PIECE_BISHOP:
+            // Brady
+            // Check if it is moving diagonally
+            if (delta_File * delta_Rank_Sign == delta_Rank_Sign * delta_Rank_Sign && delta_Rank_Sign != 0 && delta_File_Sign != 0) {
                 int temp_r = r;
                 int temp_f = f;
                 bool pass = true;
@@ -342,7 +365,7 @@ static bool piece_can_move(const struct chess_board *board,
 
             return false;
 
-      // TODO: complete movement logic for remaining pieces (bishop and queen).
+      // TODO: complete movement logic for remaining piece (queen).
      }
 }
 
