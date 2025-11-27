@@ -578,8 +578,12 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
                     board->Grid[move->Target_Rank][move->Target_File][0] = move->Promotion_Piece;
                 } else if (board->next_move_player == PLAYER_BLACK && move->Target_Rank == RANK_1) {
                     board->Grid[move->Target_Rank][move->Target_File][0] = move->Promotion_Piece;
+                } else {
+                    Legal = false;
                 }
 
+            } else if (move->Promotion_Piece != PIECE_NULL) {
+                Legal = false;
             }
 
             if (move->piece_type == PIECE_KING) {
