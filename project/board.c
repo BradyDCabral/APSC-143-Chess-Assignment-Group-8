@@ -229,10 +229,89 @@ void Move_Initialize(struct chess_move *New_Move) {
 // Panic if no piece can complete specified move, or if multiple pieces can do it
 
 //Declare helper function to verify if specific move is allowed for the piece.
-static bool piece_can_move(const struct chess_board *board, enum chess_piece pt, int f, int r, int tf, int tr, const struct chess_move *move) {
-  // TODO: implement real conditions later
- return true;
+static bool piece_can_move(const struct chess_board *board,
+                           enum chess_piece pt,
+                           int f, int r, int tf,
+                           int tr, const struct chess_move *move) {
+
+ //Get player's side
+    enum chess_player side = board->Grid[r][f][1];
+
+//Get contents of target square
+    enum chess_piece target_piece = board->Grid[tr][tf][0];
+    enum chess_player target_player = board->Grid[tr][tf][1];
+
+ // Forbid moving to the same square
+    if (tf == f && tr == r) { return false; }
+
+//Forbid removing one's piece
+    if (side == target_player && target_player != PLAYER_NULL) { return false; }
+
+ // Switch statement for each piece
+    switch (pt) {
+      case PIECE_PAWN:
+        //pawn can only move one square forward and target must be empty
+        if ((side == PLAYER_WHITE && tf == f && tr == r + 1 && target_piece == PIECE_NULL) ||
+            (side == PLAYER_BLACK && tf == f && tr == r - 1 && target_piece == PIECE_NULL) ) {
+              return true; }
+        //double step from starting rank only, intermediate squares must be empty
+        if ((side == PLAYER_WHITE
+               && r == 1
+               && tf == f
+               && tr == r + 2
+               && target_piece == PIECE_NULL
+               && board->Grid[r+1][f][0] == PIECE_NULL) ||
+            (side == PLAYER_BLACK
+               && r == 6
+               && tf == f
+               && tr == r - 2
+               && target_piece == PIECE_NULL
+               && board->Grid[r-1][f][0] == PIECE_NULL) ) {
+            return true; }
+        //captures diagonally, only if target square isn't empty
+            if (side == PLAYER_WHITE &&
+            tr == r + 1 &&
+            (tf == f + 1 || tf == f - 1) &&
+            target_piece != PIECE_NULL) {
+                return true;
+            }
+
+            if (side == PLAYER_BLACK &&
+                tr == r - 1 &&
+                (tf == f + 1 || tf == f - 1) &&
+                target_piece != PIECE_NULL) {
+                return true;
+                }
+            return false; //default to false, every other case is illegal for a pawn
+
+      case PIECE_KNIGHT:
+            //moves in L-shape => either (±1, ±2) or (±2, ±1)
+            if ( (tf == f + 1 && (tr == r + 2 || tr == r - 2)) ||
+                     (tf == f - 1 && (tr == r + 2 || tr == r - 2)) ||
+                     (tf == f + 2 && (tr == r + 1 || tr == r - 1)) ||
+                     (tf == f - 2 && (tr == r + 1 || tr == r - 1)) ) {
+                return true; }
+            return false; //default to false, every other case is illegal for a knight
+
+        case PIECE_KING:
+        //one square in any direction
+          if ((tf == f + 1 && tr == r) ||
+              (tf == f - 1 && tr == r) ||
+              (tf == f && tr == r + 1) ||
+              (tf == f && tr == r - 1) ||
+              (tf == f + 1 && tr == r + 1) ||
+              (tf == f + 1 && tr == r - 1) ||
+              (tf == f - 1 && tr == r + 1) ||
+              (tf == f - 1 && tr == r - 1)) {
+                 return true;
+              }
+            // Castling is handled in board_complete_move
+            return false; //default to false, every other case is illegal for a king
+
+      // TODO: complete movement logic for remaining pieces (rook, bishop and queen)
+     }
 }
+
 void board_complete_move(const struct chess_board *board, struct chess_move *move)
 {
 //Get playing side
