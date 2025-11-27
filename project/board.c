@@ -487,7 +487,9 @@ bool King_in_Check(struct chess_board *board, enum chess_player King_Color) {
     return false;
 }
 
+
 // Might be necessary (Brady)
+// Nevermind is redundent will be deleted later
 bool King_in_Checkmate(struct chess_board *board, enum chess_player King_Color) {
     // finds piece on king_color that can move
     for (int piece_origin_rank = RANK_1; piece_origin_rank <= RANK_8; piece_origin_rank++) {
@@ -568,6 +570,16 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
             if (EnPassant) {
                 board->Grid[board->EnPassant_Coord[0]][board->EnPassant_Coord[1]][0] = PIECE_NULL;
                 board->Grid[board->EnPassant_Coord[0]][board->EnPassant_Coord[1]][1] = PLAYER_NULL;
+            }
+
+            // promotes piece if necessary
+            if (move->Promotion_Piece != PIECE_NULL && move->piece_type == PIECE_PAWN) {
+                if (board->next_move_player == PLAYER_WHITE && move->Target_Rank == RANK_8) {
+                    board->Grid[move->Target_Rank][move->Target_File][0] = move->Promotion_Piece;
+                } else if (board->next_move_player == PLAYER_BLACK && move->Target_Rank == RANK_1) {
+                    board->Grid[move->Target_Rank][move->Target_File][0] = move->Promotion_Piece;
+                }
+
             }
 
             if (move->piece_type == PIECE_KING) {
