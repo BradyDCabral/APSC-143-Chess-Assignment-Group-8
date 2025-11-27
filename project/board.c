@@ -216,6 +216,12 @@ void Display_Move(struct chess_move *move) {
     printf("Promoting Piece = %s\n\n", piece_string(move->Promotion_Piece));
 }
 
+int sign_int(int input_num) {
+    if (input_num < 0) return -1;
+    if (input_num == 0) return 0;
+    if (input_num > 1) return 1;
+}
+
 void Move_Initialize(struct chess_move *New_Move) {
     New_Move->Capture = false;
     New_Move->Castle = false;
@@ -235,7 +241,7 @@ void Move_Initialize(struct chess_move *New_Move) {
 static bool piece_can_move(const struct chess_board *board,
                            enum chess_piece pt,
                            int f, int r, int tf,
-                           int tr, const struct chess_move *move) {
+                           int tr) {
 
  //Get player's side
     enum chess_player side = board->Grid[r][f][1];
@@ -310,8 +316,33 @@ static bool piece_can_move(const struct chess_board *board,
               }
             // Castling is handled in board_complete_move
             return false; //default to false, every other case is illegal for a king
+        case PIECE_ROOK:
 
-      // TODO: complete movement logic for remaining pieces (rook, bishop and queen).
+            int delta_Rank = tr - r;
+            int delta_Rank_Sign = sign_int(delta_Rank);
+            int delta_File = tf - f;
+            int delta_File_Sign = sign_int(delta_File);
+
+            if (delta_File_Sign * delta_Rank_Sign + delta_Rank_Sign * delta_Rank_Sign == 1) {
+                int temp_r = r;
+                int temp_f = f;
+                bool pass = true;
+                do {
+                    temp_r += delta_Rank_Sign;
+                    temp_f += delta_File_Sign;
+                    if (board->Grid[temp_r][temp_f][0] != PIECE_NULL) {
+                        pass = false;
+                        break;
+                    }
+                } while (temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h
+                    & !(temp_r == tr + delta_Rank_Sign && temp_f == tf + delta_File_Sign));
+
+                return pass;
+            }
+
+            return false;
+
+      // TODO: complete movement logic for remaining pieces (bishop and queen).
      }
 }
 
@@ -372,7 +403,7 @@ for (int r = 0; r < 8; r++) {
    if (move->Origin_Rank != RANK_NULL && r != move->Origin_Rank) continue;
 
    //Check move legality for chess piece, otherwise skip loop iteration
-   if (!piece_can_move(board, pt, f, r, tf, tr, move)) continue;
+   if (!piece_can_move(board, pt, f, r, tf, tr)) continue;
 //where piece_can_move is a helper function that determines whether that
 //piece can move in that certain way (like if a pawn is allowed to move diagonally etc)
 //Do we have something like that?
