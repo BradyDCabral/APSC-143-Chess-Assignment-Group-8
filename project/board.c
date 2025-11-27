@@ -489,6 +489,18 @@ bool King_in_Check(struct chess_board *board, enum chess_player King_Color) {
 
 // Might be necessary (Brady)
 bool King_in_Checkmate(struct chess_board *board, enum chess_player King_Color) {
+    // finds piece on king_color that can move
+    for (int piece_origin_rank = RANK_1; piece_origin_rank <= RANK_8; piece_origin_rank++) {
+        for (int piece_origin_file = FILE_a; piece_origin_file <= FILE_h; piece_origin_file++) {
+
+            if (board->Grid[piece_origin_rank][piece_origin_file][1] == King_Color) {
+                // determine if piece can move to spot
+
+            }
+        }
+    }
+
+
     return false;
 }
 
