@@ -308,7 +308,7 @@ static bool piece_can_move(const struct chess_board *board,
             // Castling is handled in board_complete_move
             return false; //default to false, every other case is illegal for a king
 
-      // TODO: complete movement logic for remaining pieces (rook, bishop and queen)
+      // TODO: complete movement logic for remaining pieces (rook, bishop and queen).
      }
 }
 
