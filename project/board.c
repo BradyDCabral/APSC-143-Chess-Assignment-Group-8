@@ -232,7 +232,7 @@ void Move_Initialize(struct chess_move *New_Move) {
 static bool piece_can_move(const struct chess_board *board,
                            enum chess_piece pt,
                            int f, int r, int tf,
-                           int tr, const struct chess_move *move) {
+                           int tr) {
 
  //Get player's side
     enum chess_player side = board->Grid[r][f][1];
@@ -369,7 +369,7 @@ for (int r = 0; r < 8; r++) {
    if (move->Origin_Rank != RANK_NULL && r != move->Origin_Rank) continue;
 
    //Check move legality for chess piece, otherwise skip loop iteration
-   if (!piece_can_move(board, pt, f, r, tf, tr, move)) continue;
+   if (!piece_can_move(board, pt, f, r, tf, tr)) continue;
 //where piece_can_move is a helper function that determines whether that
 //piece can move in that certain way (like if a pawn is allowed to move diagonally etc)
 //Do we have something like that?
@@ -592,9 +592,99 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
 }
 
 // Emily
+//does side_to move have a legal move left to do? helper function has_legal_move will determine this
+    bool has_legal_move(const struct chess_board *board, enum chess_player side) {
+        //loop over all origin squares
+        for (int r = 0; r < 8; r++) {
+            for (int f = 0; f < 8; f++) {
+
+                enum chess_piece p = board->Grid[r][f][0];
+                enum chess_player owner = board->Grid[r][f][1];
+
+                //skip empty squares or enemy pieces
+                if (p == PIECE_NULL || owner != side) {
+                    continue;
+                }
+
+                //try every possible target square
+                for (int tr = 0; tr < 8; tr++) {
+                    for (int tf = 0; tf < 8; tf++) {
+
+                        //skip same-square move
+                        if (tr == r && tf == f) {
+                            continue;
+                        }
+
+                        //check correct move logic
+                        if (!piece_can_move(board, p, f, r, tf, tr)) {
+                            continue;
+                        }
+
+                        //make a temporary copy of the board
+                        struct chess_board temp = *board;
+
+                        //apply the move on the temp board
+                        temp.Grid[tr][tf][0] = p;
+                        temp.Grid[tr][tf][1] = side;
+                        temp.Grid[r][f][0] = PIECE_NULL;
+                        temp.Grid[r][f][1] = PLAYER_NULL;
+
+                        //update king location if needed
+                        if (p == PIECE_KING) {
+                            if (side == PLAYER_WHITE) {
+                                temp.WKingPos[0] = tr;
+                                temp.WKingPos[1] = tf;
+                            } else {
+                                temp.BKingPos[0] = tr;
+                                temp.BKingPos[1] = tf;
+                            }
+                        }
+
+                        //after the move, check if side's king is in check
+                        if (!King_in_Check(&temp, side)) {
+                            //found at least one legal move
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+    //if no legal move found
+    return false;
+}
+
+
 void board_summarize(const struct chess_board *board)
 {
-    // TODO: print the state of the game.
+//decide side beign evaluated
+    enum chess_player side_to_move = board->next_move_player;
+
+//is side_to_move in check right now?
+    bool in_check = King_in_Check((struct chess_board *)board, side_to_move);
+    //evaluate has_legal_move
+    bool has_move = has_legal_move(board, side_to_move);
+
+//decide what to print => final game status
+
+    //game incomplete
+    if (has_move) {
+        printf("game incomplete\n");
+        return;
+    }
+
+    //checkmate
+    if (!has_move && in_check) {
+          if (side_to_move == PLAYER_WHITE) {
+               printf("black wins by checkmate\n");
+          } else {
+              printf("white wins by checkmate\n");
+          }
+       return;
+    }
+
+    //stalemate
+    printf("draw by stalemate\n");
+
 }
 
 void board_print(const struct chess_board *board) {
