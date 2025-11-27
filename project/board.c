@@ -200,6 +200,9 @@ void board_initialize(struct chess_board *board)
     board->BKingPos[0] = RANK_8;
     board->BKingPos[1] = FILE_e;
 
+    // Set enPassent to null
+    board->EnPassant_Coord[0] = RANK_NULL;
+    board->EnPassant_Coord[1] = FILE_NULL;
 
 }
 
@@ -417,20 +420,21 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
 
     bool Legal = true;
 
+    bool EnPassant = false;
+
     // Check if move is legal
 
 
     // Get king location as a pointer
     int *KingPosPtr = (board->next_move_player == PLAYER_WHITE ? &board->WKingPos[0] : &board->BKingPos[0]);
 
-    // Might be redundent
-    // King
-    // Normal King moves
-    if (move->piece_type == PIECE_KING) {
-        if (KingPosPtr[0] - move->Target_Rank > 1 || KingPosPtr[1] - move->Target_File > 1) {
-            Legal = false;
-        }
 
+    // if Pawn moving 2 spaces then can be en passented
+    if (move->piece_type == PIECE_PAWN) {
+        if (move->Origin_Rank - move->Target_Rank == 2 || move->Origin_Rank - move->Target_Rank == -2) {
+            board->EnPassant_Coord[0] = move->Target_Rank;
+            board->EnPassant_Coord[1] = move->Origin_File;
+        }
     }
 
 
@@ -441,6 +445,21 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
 
         enum chess_piece Sim_Elimination = board->Grid[move->Target_Rank][move->Target_File][0];
         enum chess_player Sim_Elimination_Color = board->Grid[move->Target_Rank][move->Target_File][1];
+
+        // special elimination if en passent
+        if (move->piece_type == PIECE_PAWN && move->Capture && Sim_Elimination == PIECE_NULL) {
+            if (board->EnPassant_Coord[0] == move->Origin_Rank && board->EnPassant_Coord[1] == move->Target_File) {
+                EnPassant = true;
+                Sim_Elimination = board->Grid[board->EnPassant_Coord[0]][board->EnPassant_Coord[1]][0];
+                Sim_Elimination_Color = board->Grid[board->EnPassant_Coord[0]][board->EnPassant_Coord[1]][1];
+            }
+        }
+
+        // Checks if piece marked to capture but doesnt capture
+        if (move->Capture == true && Sim_Elimination == PIECE_NULL) {
+            panicf("illegal move : %s from %s%d to %s%d", piece_string(move->piece_type), string_file(move->Origin_File),
+                move->Origin_Rank + 1, string_file(move->Target_File), move->Target_Rank+1);
+        }
 
         // if the king gets put in check then undo that move
         // Prevent piece from eliminating own piece or eliminating when not marked in notation
@@ -455,6 +474,11 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
             board->Grid[move->Origin_Rank][move->Origin_File][0] = PIECE_NULL;
             board->Grid[move->Origin_Rank][move->Origin_File][1] = PLAYER_NULL;
 
+            if (EnPassant) {
+                board->Grid[board->EnPassant_Coord[0]][board->EnPassant_Coord[1]][0] = PIECE_NULL;
+                board->Grid[board->EnPassant_Coord[0]][board->EnPassant_Coord[1]][1] = PLAYER_NULL;
+            }
+
             if (move->piece_type == PIECE_KING) {
                 if (board->next_move_player == PLAYER_WHITE) {
                     board->WKingPos[0] = move->Target_Rank;
@@ -467,8 +491,14 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
 
             // If move puts king in check then it isn't legal
             if (King_in_Check(board, board->next_move_player)) {
-                board->Grid[move->Target_Rank][move->Target_File][0] = Sim_Elimination;
-                board->Grid[move->Target_Rank][move->Target_File][1] =Sim_Elimination_Color;
+                // Might be unnecessary to put everything back but could be helpful when debugging
+                if (EnPassant) {
+                    board->Grid[board->EnPassant_Coord[0]][board->EnPassant_Coord[1]][0] = Sim_Elimination;
+                    board->Grid[board->EnPassant_Coord[0]][board->EnPassant_Coord[1]][1] = Sim_Elimination_Color;
+                } else {
+                    board->Grid[move->Target_Rank][move->Target_File][0] = Sim_Elimination;
+                    board->Grid[move->Target_Rank][move->Target_File][1] = Sim_Elimination_Color;
+                }
                 board->Grid[move->Origin_Rank][move->Origin_File][0] = move->piece_type;
                 board->Grid[move->Origin_Rank][move->Origin_File][1] = board->next_move_player;
 
@@ -481,6 +511,10 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
                         board->BKingPos[1] = move->Origin_File;
                     }
                 }
+
+
+
+
                 Legal = false;
             }
 
@@ -502,6 +536,8 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
                 } else if (move->Target_File == FILE_c && board->BLong == false) {
                     Legal = false;
                 }
+            } else {
+                Legal = false;
             }
         }
         if (Legal == true) {
@@ -535,8 +571,35 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
         }
         // Swap the rook into place
         if (Legal == true) {
+            // Check if Rook is in right position
+            // short castle
+            if (move->Target_File == FILE_g
+                && board->Grid[(board->next_move_player == PLAYER_WHITE ? RANK_1 : RANK_8)][FILE_h][0] == PIECE_ROOK) {
+                enum chess_rank temp_Rook_Rank = (board->next_move_player == PLAYER_WHITE ? RANK_1 : RANK_8);
+
+                // Swap Rook into place
+                board->Grid[temp_Rook_Rank][FILE_f][0] = PIECE_ROOK;
+                board->Grid[temp_Rook_Rank][FILE_f][1] = board->next_move_player;
+
+                board->Grid[temp_Rook_Rank][FILE_h][0] = PIECE_NULL;
+                board->Grid[temp_Rook_Rank][FILE_h][1] = PLAYER_NULL;
+            } /* Long Castle */ else if (move->Target_File == FILE_c
+                && board->Grid[(board->next_move_player == PLAYER_WHITE ? RANK_1 : RANK_8)][FILE_a][0] == PIECE_ROOK) {
+                enum chess_rank temp_Rook_Rank = (board->next_move_player == PLAYER_WHITE ? RANK_1 : RANK_8);
+
+                // Swap Rook into place
+                board->Grid[temp_Rook_Rank][FILE_d][0] = PIECE_ROOK;
+                board->Grid[temp_Rook_Rank][FILE_d][1] = board->next_move_player;
+
+                board->Grid[temp_Rook_Rank][FILE_a][0] = PIECE_NULL;
+                board->Grid[temp_Rook_Rank][FILE_a][1] = PLAYER_NULL;
+            } else {
+                Legal = false;
+            }
+
 
         }
+
     }
 
     if (Legal == false) {

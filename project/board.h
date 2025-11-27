@@ -80,6 +80,7 @@ struct chess_board
 
     // En Passant Variables
     // Confused on this
+    int EnPassant_Coord[2];
 };
 
 struct chess_move
