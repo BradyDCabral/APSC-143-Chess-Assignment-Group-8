@@ -484,6 +484,124 @@ for (int r = 0; r < 8; r++) {
 // Owen
 bool King_in_Check(struct chess_board *board, enum chess_player King_Color) {
 
+    int King_rank, King_file;
+    enum chess_player enemy;
+
+    if (King_Color == PLAYER_WHITE) {
+        King_rank = board->WKingPos[0];
+        King_file = board->WKingPos[1];
+        enemy = PLAYER_BLACK;
+    } else if (King_Color == PLAYER_BLACK) {
+        King_rank = board->BKingPos[0];
+        King_file = board->BKingPos[1];
+        enemy = PLAYER_WHITE;
+    } else {
+        panicf("King_in_Check called with invalid king color\n");
+    }
+
+    if (King_Color == PLAYER_WHITE) {
+        int r = King_rank + 1;
+        int f_left  = King_file - 1;
+        int f_right = King_file + 1;
+        if (r >= 0 && r < 8 && f_left >= 0 && f_left < 8) {
+            if (board->Grid[r][f_left][0] == PIECE_PAWN && board->Grid[r][f_left][1] == PLAYER_BLACK) {
+                return true;
+            }
+        }
+        if (r >= 0 && r < 8 && f_right >= 0 && f_right < 8) {
+            if (board->Grid[r][f_right][0] == PIECE_PAWN && board->Grid[r][f_right][1] == PLAYER_BLACK) {
+                return true;
+            }
+        }
+    } else {
+        int r = King_rank - 1;
+        int f_left  = King_file - 1;
+        int f_right = King_file + 1;
+        if (r >= 0 && r < 8 && f_left >= 0 && f_left < 8) {
+            if (board->Grid[r][f_left][0] == PIECE_PAWN && board->Grid[r][f_left][1] == PLAYER_WHITE) {
+                return true;
+            }
+        }
+        if (r >= 0 && r < 8 && f_right >= 0 && f_right < 8) {
+            if (board->Grid[r][f_right][0] == PIECE_PAWN && board->Grid[r][f_right][1] == PLAYER_WHITE) {
+                return true;
+            }
+        }
+    }
+
+    const int knight_offsets[8][2] = {
+        { 1,  2}, { 2,  1},
+        { 2, -1}, { 1, -2},
+        {-1, -2}, {-2, -1},
+        {-2,  1}, {-1,  2}
+    };
+    for (int i = 0; i < 8; ++i) {
+        int r = King_rank + knight_offsets[i][0];
+        int f = King_file + knight_offsets[i][1];
+        if (r < 0 || r >= 8 || f < 0 || f >= 8) continue;
+        if (board->Grid[r][f][0] == PIECE_KNIGHT && board->Grid[r][f][1] == enemy) {
+            return true;
+        }
+    }
+
+    const int rook_dirs[4][2] = {
+        { 1,  0}, {-1,  0},
+        { 0,  1}, { 0, -1}
+    };
+    for (int d = 0; d < 4; ++d) {
+        int dr = rook_dirs[d][0];
+        int df = rook_dirs[d][1];
+        int r = King_rank + dr;
+        int f = King_file + df;
+        while (r >= 0 && r < 8 && f >= 0 && f < 8) {
+            enum chess_piece p = board->Grid[r][f][0];
+            enum chess_player c = board->Grid[r][f][1];
+            if (p != PIECE_NULL) {
+                if (c == enemy && (p == PIECE_ROOK || p == PIECE_QUEEN)) {
+                    return true;
+                }
+                break;
+            }
+            r += dr;
+            f += df;
+        }
+    }
+
+    const int bishop_dirs[4][2] = {
+        { 1,  1}, { 1, -1},
+        {-1,  1}, {-1, -1}
+    };
+    for (int d = 0; d < 4; ++d) {
+        int dr = bishop_dirs[d][0];
+        int df = bishop_dirs[d][1];
+        int r = King_rank + dr;
+        int f = King_file + df;
+        while (r >= 0 && r < 8 && f >= 0 && f < 8) {
+            enum chess_piece p = board->Grid[r][f][0];
+            enum chess_player c = board->Grid[r][f][1];
+            if (p != PIECE_NULL) {
+                if (c == enemy && (p == PIECE_BISHOP || p == PIECE_QUEEN)) {
+                    return true;
+                }
+                break;
+            }
+            r += dr;
+            f += df;
+        }
+    }
+
+    for (int dr = -1; dr <= 1; ++dr) {
+        for (int df = -1; df <= 1; ++df) {
+            if (dr == 0 && df == 0) continue;
+            int r = King_rank + dr;
+            int f = King_file + df;
+            if (r < 0 || r >= 8 || f < 0 || f >= 8) continue;
+            if (board->Grid[r][f][0] == PIECE_KING && board->Grid[r][f][1] == enemy) {
+                return true;
+            }
+        }
+    }
+
     return false;
 }
 
