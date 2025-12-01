@@ -332,19 +332,20 @@ static bool piece_can_move(const struct chess_board *board,
             // Castling is handled in board_complete_move
             return false; //default to false, every other case is illegal for a king
         case PIECE_ROOK:
+            // TODO : FIX ROOK
             if (delta_File_Sign * delta_File_Sign + delta_Rank_Sign * delta_Rank_Sign == 1) {
                 int temp_r = r;
                 int temp_f = f;
                 bool pass = true;
-                do {
+                while ((temp_r + delta_Rank_Sign >= RANK_1 && temp_r + delta_Rank_Sign <= RANK_8 && temp_f + delta_File_Sign >= FILE_a && temp_f + delta_File_Sign <= FILE_h)
+                    & !(temp_r + delta_Rank_Sign == tr && temp_f + delta_File_Sign == tf )) {
                     temp_r += delta_Rank_Sign;
                     temp_f += delta_File_Sign;
                     if (board->Grid[temp_r][temp_f][0] != PIECE_NULL) {
                         pass = false;
                         break;
                     }
-                } while ((temp_r + delta_Rank_Sign >= RANK_1 && temp_r + delta_Rank_Sign <= RANK_8 && temp_f + delta_File_Sign >= FILE_a && temp_f + delta_File_Sign <= FILE_h)
-                    & !(temp_r + delta_Rank_Sign == tr && temp_f + delta_File_Sign == tf ));
+                }
 
                 return pass;
             }
@@ -360,15 +361,15 @@ static bool piece_can_move(const struct chess_board *board,
                 int temp_f = f;
                 bool pass = true;
                 // check if it is lands on piece when moving
-                do {
+                while ((temp_r + delta_Rank_Sign >= RANK_1 && temp_r + delta_Rank_Sign <= RANK_8 && temp_f + delta_File_Sign >= FILE_a && temp_f + delta_File_Sign <= FILE_h)
+                   & !(temp_r + delta_Rank_Sign == tr && temp_f + delta_File_Sign == tf )) {
                     temp_r += delta_Rank_Sign;
                     temp_f += delta_File_Sign;
                     if (board->Grid[temp_r][temp_f][0] != PIECE_NULL) {
                         pass = false;
                         break;
                     }
-                } while ((temp_r + delta_Rank_Sign >= RANK_1 && temp_r + delta_Rank_Sign <= RANK_8 && temp_f + delta_File_Sign >= FILE_a && temp_f + delta_File_Sign <= FILE_h)
-                    & !(temp_r + delta_Rank_Sign == tr && temp_f + delta_File_Sign == tf ));
+                }
 
                 return pass;
             }
@@ -383,16 +384,16 @@ static bool piece_can_move(const struct chess_board *board,
                 int temp_f = f;
                 bool pass = true;
                 // check if it is lands on piece when moving
-                do {
+                while ((temp_r + delta_Rank_Sign >= RANK_1 && temp_r + delta_Rank_Sign <= RANK_8 && temp_f + delta_File_Sign >= FILE_a && temp_f + delta_File_Sign <= FILE_h)
+                    & !(temp_r + delta_Rank_Sign == tr && temp_f + delta_File_Sign == tf )){
                     temp_r += delta_Rank_Sign;
                     temp_f += delta_File_Sign;
                     if (board->Grid[temp_r][temp_f][0] != PIECE_NULL && !(temp_r == tr && temp_f == tf)) {
                         pass = false;
                         break;
                     }
-                // TODO : Fix while loop conditions
-                } while ((temp_r + delta_Rank_Sign >= RANK_1 && temp_r + delta_Rank_Sign <= RANK_8 && temp_f + delta_File_Sign >= FILE_a && temp_f + delta_File_Sign <= FILE_h)
-                    & !(temp_r + delta_Rank_Sign == tr && temp_f + delta_File_Sign == tf ));
+
+                }
 
                 return pass;
             }
