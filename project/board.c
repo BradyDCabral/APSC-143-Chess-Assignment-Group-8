@@ -346,7 +346,7 @@ static bool piece_can_move(const struct chess_board *board,
         case PIECE_BISHOP:
 
             // Check if it is moving diagonally
-            if (delta_File * delta_Rank_Sign == delta_Rank_Sign * delta_Rank_Sign && delta_Rank_Sign != 0 && delta_File_Sign != 0) {
+            if (delta_File * delta_File_Sign == delta_Rank * delta_Rank_Sign && delta_Rank_Sign != 0 && delta_File_Sign != 0) {
                 int temp_r = r;
                 int temp_f = f;
                 bool pass = true;
@@ -368,7 +368,7 @@ static bool piece_can_move(const struct chess_board *board,
         case PIECE_QUEEN:
 
             // check if diagonal movement or horizontal or vertical movement
-            if ((delta_File * delta_Rank_Sign == delta_Rank_Sign * delta_Rank_Sign && delta_Rank_Sign != 0 && delta_File_Sign != 0)
+            if ((delta_File * delta_File_Sign == delta_Rank * delta_Rank_Sign && delta_Rank_Sign != 0 && delta_File_Sign != 0)
                 || (delta_File_Sign * delta_Rank_Sign + delta_Rank_Sign * delta_Rank_Sign == 1)) {
                 int temp_r = r;
                 int temp_f = f;
@@ -377,10 +377,11 @@ static bool piece_can_move(const struct chess_board *board,
                 do {
                     temp_r += delta_Rank_Sign;
                     temp_f += delta_File_Sign;
-                    if (board->Grid[temp_r][temp_f][0] != PIECE_NULL) {
+                    if (board->Grid[temp_r][temp_f][0] != PIECE_NULL && !(temp_r == tr && temp_f == tf)) {
                         pass = false;
                         break;
                     }
+                // TODO : Fix while loop conditions
                 } while ((temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h)
                     & !(temp_r == tr + delta_Rank_Sign && temp_f == tf + delta_File_Sign));
 
@@ -417,7 +418,7 @@ enum chess_rank rank;
            piece_string(pt),
            string_file(tf),
            tf + 1);
-}
+   }
 //Panic if king isn't in place
    if (board->Grid[rank][FILE_e][0] != PIECE_KING || board->Grid[rank][FILE_e][1] != side) {
        panicf("move completion error: %s %s to %s%d\n",
@@ -465,17 +466,17 @@ for (int r = 0; r < 8; r++) {
 
 //Step 3 - Handle Candidate Number
   if (cand_count == 0) {
-      panicf("move completion error: %s %s to %s%d\n",
+      panicf("no move : move completion error: %s %s to %s%d\n",
            player_string(side),
            piece_string(pt),
            string_file(tf),
-           tf + 1);
+           tr + 1);
    } else if (cand_count > 1) {
-       panicf("move completion error: %s %s to %s%d\n",
+       panicf("too many moves : move completion error: %s %s to %s%d\n",
             player_string(side),
             piece_string(pt),
             string_file(tf),
-            tf + 1);
+            tr + 1);
   } else {
      move->Origin_File = cand_files[0];
      move->Origin_Rank = cand_ranks[0];
@@ -983,4 +984,5 @@ void board_print(const struct chess_board *board) {
         }
         printf("\n");
     }
+    printf("\n\n");
 }

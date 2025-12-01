@@ -8,7 +8,7 @@ int main()
 
     struct chess_board board;
     board_initialize(&board);
-
+    int movenum = 1;
 
     board_print(&board);
 
@@ -17,6 +17,10 @@ int main()
     {
         board_complete_move(&board, &move);
         board_apply_move(&board, &move);
+
+        printf("move : %d\n", movenum);
+        board_print(&board);
+        movenum++;
     }
 
     board_summarize(&board);

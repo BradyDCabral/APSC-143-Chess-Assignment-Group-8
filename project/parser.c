@@ -8,7 +8,7 @@ bool parse_move(struct chess_move *move)
 
 
     // Temp variable
-    bool Test = true;
+    bool Test = false;
 
     // VARIABLES FOR CONTEXT
     bool promotion = false;
@@ -150,7 +150,7 @@ bool parse_move(struct chess_move *move)
     // Second Character : determines location (Unclear yet if it is starting or target)
     c = getc(stdin);
 
-    printf("damn %c\n", c);
+
 
     int Limbo_File = FILE_NULL;
     int Limbo_Rank = RANK_NULL;
@@ -188,9 +188,11 @@ bool parse_move(struct chess_move *move)
     }
     */
 
+
     if (c >= '1' && c <= '8' && Limbo_File != FILE_NULL) {
         move->Target_File = Limbo_File;
         move->Target_Rank = c - '1';
+        // printf("damn %d\n", move->Target_Rank + 1);
     } else if (c >= 'a' && c <= 'h') {
         move->Target_File = c - 'a';
         move->Origin_File = Limbo_File;
@@ -222,7 +224,7 @@ bool parse_move(struct chess_move *move)
 
     if (c >= 'a' && c <= 'h') {
         move->Target_File = c - 'a';
-    } else if (c >= '1' && c <= '8'  && !move->Capture && move->Target_Rank==RANK_NULL) {
+    } else if (c >= '1' && c <= '8'  /* && !move->Capture */ && move->Target_Rank==RANK_NULL) {
         move->Target_Rank = c - '1';
         // might be more here
     } else if (c == '=') {
