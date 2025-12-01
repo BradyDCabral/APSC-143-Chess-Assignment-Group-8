@@ -204,6 +204,15 @@ void board_initialize(struct chess_board *board)
     board->EnPassant_Coord[0] = RANK_NULL;
     board->EnPassant_Coord[1] = FILE_NULL;
 
+    // King bool
+    // white castling
+    board->WLong = true;
+    board->WShort = true;
+
+    // Black castling
+    board->BLong = true;
+    board->BShort = true;
+
 }
 
 void Display_Move(struct chess_move *move) {
@@ -323,7 +332,7 @@ static bool piece_can_move(const struct chess_board *board,
             // Castling is handled in board_complete_move
             return false; //default to false, every other case is illegal for a king
         case PIECE_ROOK:
-            if (delta_File_Sign * delta_Rank_Sign + delta_Rank_Sign * delta_Rank_Sign == 1) {
+            if (delta_File_Sign * delta_File_Sign + delta_Rank_Sign * delta_Rank_Sign == 1) {
                 int temp_r = r;
                 int temp_f = f;
                 bool pass = true;
@@ -369,7 +378,7 @@ static bool piece_can_move(const struct chess_board *board,
 
             // check if diagonal movement or horizontal or vertical movement
             if ((delta_File * delta_File_Sign == delta_Rank * delta_Rank_Sign && delta_Rank_Sign != 0 && delta_File_Sign != 0)
-                || (delta_File_Sign * delta_Rank_Sign + delta_Rank_Sign * delta_Rank_Sign == 1)) {
+                || (delta_File_Sign * delta_File_Sign + delta_Rank_Sign * delta_Rank_Sign == 1)) {
                 int temp_r = r;
                 int temp_f = f;
                 bool pass = true;

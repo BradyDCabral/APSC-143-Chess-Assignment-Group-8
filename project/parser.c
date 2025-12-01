@@ -117,6 +117,7 @@ bool parse_move(struct chess_move *move)
             }
             if (c != '-') {
                 loop_Castle = false;
+                break;
             }
 
             c = getc(stdin);
@@ -126,18 +127,23 @@ bool parse_move(struct chess_move *move)
             }
             if (c != 'O') {
                 loop_Castle = false;
+                break;
             }
 
         }
+
+        ungetc(c, stdin);
 
         if (num_of_Os == 1) {
             move->Target_File = FILE_g;
         } else if (num_of_Os == 2) {
             move->Target_File = FILE_c;
         }
+        c = getc(stdin);
 
 
-
+        printf("------DAMN |%c|------", c);
+        ungetc(c, stdin);
         if (Test) {
             printf("---Castle Target Determined---\n");
             Display_Move(move);
