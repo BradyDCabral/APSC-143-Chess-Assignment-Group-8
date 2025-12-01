@@ -293,17 +293,19 @@ static bool piece_can_move(const struct chess_board *board,
                && board->Grid[r-1][f][0] == PIECE_NULL) ) {
             return true; }
         //captures diagonally, only if target square isn't empty
+            // TODO : modify to allow for en passent
             if (side == PLAYER_WHITE &&
             tr == r + 1 &&
             (tf == f + 1 || tf == f - 1) &&
-            target_piece != PIECE_NULL) {
+            (target_piece != PIECE_NULL || (r == board->EnPassant_Coord[0] && tf == board->EnPassant_Coord[1]))) {
                 return true;
             }
 
             if (side == PLAYER_BLACK &&
                 tr == r - 1 &&
                 (tf == f + 1 || tf == f - 1) &&
-                target_piece != PIECE_NULL) {
+                (target_piece != PIECE_NULL || (r == board->EnPassant_Coord[0] && tf == board->EnPassant_Coord[1]))) {
+
                 return true;
                 }
             return false; //default to false, every other case is illegal for a pawn
@@ -651,13 +653,7 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
     int *KingPosPtr = (board->next_move_player == PLAYER_WHITE ? &board->WKingPos[0] : &board->BKingPos[0]);
 
 
-    // if Pawn moving 2 spaces then can be en passented
-    if (move->piece_type == PIECE_PAWN) {
-        if (move->Origin_Rank - move->Target_Rank == 2 || move->Origin_Rank - move->Target_Rank == -2) {
-            board->EnPassant_Coord[0] = move->Target_Rank;
-            board->EnPassant_Coord[1] = move->Origin_File;
-        }
-    }
+
 
 
     // Doesn't do the check if it is a castle as that requires a different form of check
@@ -688,6 +684,12 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
         if (Sim_Elimination_Color == board->next_move_player || (Sim_Elimination != PIECE_NULL && move->Capture == false)) {
             Legal = false;
         }
+
+        // Explicitly stops pawn from going diagonally if not capturing
+        if (sign_int(move->Target_File-move->Origin_File) != 0 && move->Capture == false && move->piece_type == PIECE_PAWN) {
+            Legal = false;
+        }
+
 
         // Gonnna make the move
         if (Legal == true) {
@@ -873,6 +875,16 @@ void board_apply_move(struct chess_board *board, const struct chess_move *move)
                 }
 
             }
+        }
+    }
+    board->EnPassant_Coord[0] = RANK_NULL;
+    board->EnPassant_Coord[1] = FILE_NULL;
+
+    // if Pawn moving 2 spaces then can be en passented
+    if (move->piece_type == PIECE_PAWN) {
+        if (move->Origin_Rank - move->Target_Rank == 2 || move->Origin_Rank - move->Target_Rank == -2) {
+            board->EnPassant_Coord[0] = move->Target_Rank;
+            board->EnPassant_Coord[1] = move->Origin_File;
         }
     }
 

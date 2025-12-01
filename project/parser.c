@@ -142,7 +142,7 @@ bool parse_move(struct chess_move *move)
         c = getc(stdin);
 
 
-        printf("------DAMN |%c|------", c);
+
         ungetc(c, stdin);
         if (Test) {
             printf("---Castle Target Determined---\n");
