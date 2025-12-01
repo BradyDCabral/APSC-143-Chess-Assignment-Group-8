@@ -334,8 +334,8 @@ static bool piece_can_move(const struct chess_board *board,
                         pass = false;
                         break;
                     }
-                } while ((temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h)
-                    & !(temp_r == tr + delta_Rank_Sign && temp_f == tf + delta_File_Sign));
+                } while ((temp_r + delta_Rank_Sign >= RANK_1 && temp_r + delta_Rank_Sign <= RANK_8 && temp_f + delta_File_Sign >= FILE_a && temp_f + delta_File_Sign <= FILE_h)
+                    & !(temp_r + delta_Rank_Sign == tr && temp_f + delta_File_Sign == tf ));
 
                 return pass;
             }
@@ -358,8 +358,8 @@ static bool piece_can_move(const struct chess_board *board,
                         pass = false;
                         break;
                     }
-                } while ((temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h)
-                    & !(temp_r == tr + delta_Rank_Sign && temp_f == tf + delta_File_Sign));
+                } while ((temp_r + delta_Rank_Sign >= RANK_1 && temp_r + delta_Rank_Sign <= RANK_8 && temp_f + delta_File_Sign >= FILE_a && temp_f + delta_File_Sign <= FILE_h)
+                    & !(temp_r + delta_Rank_Sign == tr && temp_f + delta_File_Sign == tf ));
 
                 return pass;
             }
@@ -382,8 +382,8 @@ static bool piece_can_move(const struct chess_board *board,
                         break;
                     }
                 // TODO : Fix while loop conditions
-                } while ((temp_r > RANK_1 && temp_r < RANK_8 && temp_f > FILE_a && temp_f < FILE_h)
-                    & !(temp_r == tr + delta_Rank_Sign && temp_f == tf + delta_File_Sign));
+                } while ((temp_r + delta_Rank_Sign >= RANK_1 && temp_r + delta_Rank_Sign <= RANK_8 && temp_f + delta_File_Sign >= FILE_a && temp_f + delta_File_Sign <= FILE_h)
+                    & !(temp_r + delta_Rank_Sign == tr && temp_f + delta_File_Sign == tf ));
 
                 return pass;
             }
