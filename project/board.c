@@ -102,7 +102,7 @@ const char *piece_string_short(enum chess_piece piece)
 void board_initialize(struct chess_board *board)
 {
     board->next_move_player = PLAYER_WHITE;
-    // TODO: initialize the board state for a new chess game.
+
 
     // Setting all values to Null
     for (int rank = 0; rank < 8; ++rank) {
@@ -332,7 +332,7 @@ static bool piece_can_move(const struct chess_board *board,
             // Castling is handled in board_complete_move
             return false; //default to false, every other case is illegal for a king
         case PIECE_ROOK:
-            // TODO : FIX ROOK
+
             if (delta_File_Sign * delta_File_Sign + delta_Rank_Sign * delta_Rank_Sign == 1) {
                 int temp_r = r;
                 int temp_f = f;
@@ -476,13 +476,13 @@ for (int r = 0; r < 8; r++) {
 
 //Step 3 - Handle Candidate Number
   if (cand_count == 0) {
-      panicf("no move : move completion error: %s %s to %s%d\n",
+      panicf("move completion error: %s %s to %s%d\n",
            player_string(side),
            piece_string(pt),
            string_file(tf),
            tr + 1);
    } else if (cand_count > 1) {
-       panicf("too many moves : move completion error: %s %s to %s%d\n",
+       panicf("move completion error: %s %s to %s%d\n",
             player_string(side),
             piece_string(pt),
             string_file(tf),
@@ -638,7 +638,7 @@ bool King_in_Checkmate(struct chess_board *board, enum chess_player King_Color) 
 // Brady
 void board_apply_move(struct chess_board *board, const struct chess_move *move)
 {
-    // TODO: apply a completed move to the board.
+
 
     bool Legal = true;
 
