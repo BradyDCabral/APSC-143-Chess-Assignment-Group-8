@@ -198,7 +198,6 @@ bool parse_move(struct chess_move *move)
     if (c >= '1' && c <= '8' && Limbo_File != FILE_NULL) {
         move->Target_File = Limbo_File;
         move->Target_Rank = c - '1';
-        // printf("damn %d\n", move->Target_Rank + 1);
     } else if (c >= 'a' && c <= 'h') {
         move->Target_File = c - 'a';
         move->Origin_File = Limbo_File;

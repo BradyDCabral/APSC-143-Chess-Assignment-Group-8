@@ -30,3 +30,6 @@
 146	312	7863172815378392	chess-analysis.exe	c0b0adb696e9b52d
 11	214	7863176024272358	CMakeFiles/chess-analysis.dir/board.c.obj	a2507d0a3e1fae6c
 215	396	7863176026318719	chess-analysis.exe	c0b0adb696e9b52d
+31	193	7864980355544219	CMakeFiles/chess-analysis.dir/main.c.obj	397f93c5b1033e4a
+45	195	7864980355684216	CMakeFiles/chess-analysis.dir/parser.c.obj	c08909456a7afb2e
+195	443	7864980357180676	chess-analysis.exe	c0b0adb696e9b52d
